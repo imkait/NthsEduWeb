@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>封包傳遞與 TCP/IP 原理視覺化</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <h1>網路封包傳遞原來這麼簡單！</h1>
+        <p>跟著動畫一起了解 OSI 七層架構封裝與傳輸的奧秘</p>
+    </header>
+
+    <main class="container">
+        <!-- 控制面板 -->
+        <section class="controls">
+            <div class="input-group">
+                <label for="messageInput">輸入訊息：</label>
+                <input type="text" id="messageInput" value="Hello, World!" maxlength="20">
+            </div>
+            <div class="button-group">
+                <button id="startBtn" class="btn primary">開始傳輸</button>
+                <button id="pauseBtn" class="btn warning" disabled>暫停</button>
+                <button id="resetBtn" class="btn secondary">重置</button>
+            </div>
+            <div class="speed-control">
+                <label for="speedRange">動畫速度：</label>
+                <input type="range" id="speedRange" min="1" max="5" value="3">
+            </div>
+        </section>
+
+        <!-- 動畫舞台 -->
+        <section class="stage">
+            <!-- 發送端 Layer 指示器 -->
+            <div class="layer-list sender-layers">
+                <div class="layer-item" id="s-step7">7. 應用層</div>
+                <div class="layer-item" id="s-step6">6. 表現層</div>
+                <div class="layer-item" id="s-step5">5. 會議層</div>
+                <div class="layer-item" id="s-step4">4. 傳輸層</div>
+                <div class="layer-item" id="s-step3">3. 網路層</div>
+                <div class="layer-item" id="s-step2">2. 連結層</div>
+                <div class="layer-item" id="s-step1">1. 實體層</div>
+            </div>
+
+            <!-- 發送端 (Client/Sender) -->
+            <div class="device sender">
+                <div class="device-icon">💻</div>
+                <div class="device-label">發送端 (Client)</div>
+                <div class="stack-container" id="senderStack">
+                    <!-- Layers will be generated here -->
+                </div>
+            </div>
+
+            <!-- 網路傳輸路徑 -->
+            <div class="network-path">
+                <div class="connection-line"></div>
+                <div class="router">
+                    <div class="device-icon">🔄</div>
+                    <div class="device-label">路由器</div>
+                </div>
+                <div class="connection-line"></div>
+
+                <!-- 傳輸中的封包 -->
+                <div id="flyingPacket" class="flying-packet hidden">
+                    <div class="packet-content">DATA</div>
+                </div>
+            </div>
+
+            <!-- 接收端 (Server/Receiver) -->
+            <div class="device receiver">
+                <div class="device-icon">🖥️</div>
+                <div class="device-label">接收端 (Server)</div>
+                <div class="stack-container" id="receiverStack">
+                    <!-- Layers will be generated here -->
+                </div>
+                <div id="finalMessage" class="final-message hidden"></div>
+            </div>
+
+            <!-- 接收端 Layer 指示器 -->
+            <div class="layer-list receiver-layers">
+                <div class="layer-item" id="r-step7">7. 應用層</div>
+                <div class="layer-item" id="r-step6">6. 表現層</div>
+                <div class="layer-item" id="r-step5">5. 會議層</div>
+                <div class="layer-item" id="r-step4">4. 傳輸層</div>
+                <div class="layer-item" id="r-step3">3. 網路層</div>
+                <div class="layer-item" id="r-step2">2. 連結層</div>
+                <div class="layer-item" id="r-step1">1. 實體層</div>
+            </div>
+        </section>
+
+        <!-- 教學說明區域 -->
+        <section class="info-panel">
+            <div id="explanationText" class="explanation-box">
+                準備好開始了嗎？輸入訊息並點擊「開始傳輸」！
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Designed for Education | OSI 7-Layer Visualization</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <!-- 返回入口網頁按鈕 -->
+    <a href="../index.html" class="back-to-home-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        回到首頁
+    </a>
+    <style>
+        .back-to-home-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0f4c81;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        .back-to-home-btn:hover {
+            background-color: #2c7da0;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-to-home-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</body>
+
+</html>

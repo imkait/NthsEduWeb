@@ -1,0 +1,548 @@
+:root {
+    /* Color Palette - Premium Dark Theme */
+    --bg-main: #0f172a;
+    /* Slate 900 */
+    --bg-panel: #1e293b;
+    /* Slate 800 */
+    --text-primary: #f1f5f9;
+    /* Slate 100 */
+    --text-secondary: #94a3b8;
+    /* Slate 400 */
+    --accent-primary: #38bdf8;
+    /* Sky 400 */
+
+    /* Function Colors */
+    --color-sin: #ef4444;
+    /* Red 500 */
+    --color-cos: #3b82f6;
+    /* Blue 500 */
+    --color-tan: #10b981;
+    /* Emerald 500 */
+    --color-cot: #ec4899;
+    /* Pink 500 */
+    --color-sec: #a855f7;
+    /* Purple 500 */
+    --color-csc: #f97316;
+    /* Orange 500 */
+    --color-angle: #fbbf24;
+    /* Amber 400 */
+
+    /* UI Elements */
+    --border-color: #334155;
+    /* Slate 700 */
+    --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-glow: 0 0 15px rgba(56, 189, 248, 0.15);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Outfit', sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-primary);
+    line-height: 1.6;
+    min-height: 100vh;
+    overflow-y: auto;
+    /* 允許捲動以查看公式面板 */
+    display: flex;
+    justify-content: center;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 1600px;
+    height: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Header */
+.main-header {
+    flex-shrink: 0;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.main-header h1 {
+    font-weight: 700;
+    font-size: 2rem;
+    letter-spacing: -0.02em;
+    background: linear-gradient(to right, var(--text-primary), var(--accent-primary));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* Main Grid Layout */
+.main-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 550px 1fr;
+    /* Fixed sidebar, flexible content */
+    gap: 20px;
+    min-height: 0;
+    /* Important for scroll calculations */
+}
+
+/* 公式面板橫跨整個 grid */
+.main-grid>.formula-panel {
+    grid-column: 1 / -1;
+}
+
+/* Right Column Container */
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    height: 100%;
+}
+
+/* Panels */
+.panel {
+    background-color: var(--bg-panel);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--shadow-soft);
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-header {
+    margin-bottom: 15px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.panel-header h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Info Panel Styles */
+.info-panel {
+    overflow-y: auto;
+    /* Info panel naturally stretches in Grid */
+}
+
+.value-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 30px;
+}
+
+.value-item {
+    background: rgba(15, 23, 42, 0.5);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.label {
+    display: block;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.value-display {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 1.2rem;
+    /* Reduced from 1.5rem */
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.info-note {
+    background: rgba(56, 189, 248, 0.1);
+    border-left: 4px solid var(--accent-primary);
+    padding: 12px;
+    margin-top: 5px;
+    border-radius: 0 8px 8px 0;
+}
+
+.info-note p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+.info-note p:last-child {
+    margin-bottom: 0;
+}
+
+.math-font {
+    font-family: 'Roboto Mono', monospace;
+}
+
+.divider {
+    color: var(--border-color);
+    margin: 0 10px;
+}
+
+/* Fraction Display Styles */
+.frac-container {
+    display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
+}
+
+.frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 2px;
+    font-size: 0.85em;
+    /* Slightly smaller for fractions */
+}
+
+.num {
+    border-bottom: 1px solid currentColor;
+    padding: 0 2px;
+    margin-bottom: 1px;
+}
+
+.den {
+    padding: 0 2px;
+}
+
+/* Highlight Colors */
+.highlight-sin {
+    color: var(--color-sin);
+}
+
+.highlight-cos {
+    color: var(--color-cos);
+}
+
+.highlight-tan {
+    color: var(--color-tan);
+}
+
+/* Function Row Styling */
+.func-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 1.1rem;
+    /* Allow wrapping if too long */
+    gap: 0px;
+    /* Removed gap as requested */
+    /* Reduced from 1.4rem */
+}
+
+.func-label {
+    font-weight: 600;
+    margin-right: 2px;
+    /* Tiny space between SIN and Angle */
+}
+
+.func-angle {
+    color: var(--text-secondary);
+    text-align: right;
+}
+
+.func-eq {
+    color: var(--text-secondary);
+    padding: 0 5px;
+    /* Space around equals sign */
+}
+
+.func-identity {
+    color: var(--text-secondary);
+    font-size: 0.9em;
+    /* Slightly smaller for the secondary identity */
+}
+
+.highlight-cos {
+    color: var(--color-cos);
+}
+
+.highlight-tan {
+    color: var(--color-tan);
+}
+
+.highlight-cot {
+    color: var(--color-cot);
+}
+
+.highlight-sec {
+    color: var(--color-sec);
+}
+
+.highlight-csc {
+    color: var(--color-csc);
+}
+
+.highlight-angle {
+    color: var(--color-angle);
+}
+
+.color-sin {
+    color: var(--color-sin);
+    font-weight: 600;
+}
+
+.color-cos {
+    color: var(--color-cos);
+    font-weight: 600;
+}
+
+.color-tan {
+    color: var(--color-tan);
+    font-weight: 600;
+}
+
+/* Controls */
+.controls-group h3 {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 15px;
+}
+
+.toggle-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.toggle-control input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--accent-primary);
+}
+
+.toggle-label {
+    font-size: 0.95rem;
+}
+
+/* Visualization Row (Circle + Controls) */
+.visualization-row {
+    display: flex;
+    gap: 20px;
+    min-height: 0;
+    /* 限制圓形面板的最大高度，讓波形面板能在畫面上顯示 */
+    max-height: 350px;
+}
+
+/* Visualization Panel - takes remaining space in row */
+.visualization-panel {
+    position: relative;
+    padding: 0;
+    /* Let canvas fill */
+    overflow: hidden;
+    background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    min-height: 280px;
+    max-height: 350px;
+}
+
+/* New Controls Panel */
+.controls-panel {
+    width: 200px;
+    /* Fixed width for controls */
+    flex-shrink: 0;
+    overflow-y: auto;
+}
+
+.canvas-container {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.overlay-instruction {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.6);
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.8);
+    pointer-events: none;
+    opacity: 0.8;
+}
+
+/* Graph Panel (Bottom, now inside right column) */
+.graph-panel {
+    /* 增加高度以完整顯示 tan 曲線 */
+    height: 250px;
+    flex-shrink: 0;
+}
+
+/* 公式面板樣式 Formula Panel Styles */
+.formula-panel {
+    margin-top: 20px;
+    padding: 20px;
+}
+
+.formula-grid {
+    display: grid;
+    /* 使用 auto-fit 讓欄位自動適應 RWD，最小寬度 250px */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.formula-group {
+    background: rgba(15, 23, 42, 0.5);
+    padding: 15px;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+.formula-group h3 {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent-primary);
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.formula {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.9rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    padding: 5px 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+.formula:last-child {
+    margin-bottom: 0;
+}
+
+/* 公式面板內的分數樣式 */
+.formula .frac {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 4px;
+    font-size: 0.8em;
+    vertical-align: middle;
+}
+
+.formula .frac .num {
+    border-bottom: 1px solid var(--text-primary);
+    padding: 0 4px 2px;
+    margin-bottom: 2px;
+}
+
+.formula .frac .den {
+    padding: 2px 4px 0;
+}
+
+/* 六邊形記憶法樣式 */
+.hexagon-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hexagon-svg {
+    width: 180px;
+    height: 180px;
+    margin: 10px auto;
+}
+
+.hexagon-rules {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.hexagon-rules .rule {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 4px;
+}
+
+/* 響應式設計 - 公式面板 */
+@media (max-width: 1200px) {
+    .formula-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 900px) {
+    body {
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .app-container {
+        height: auto;
+    }
+
+    .main-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto;
+        /* Info then Content */
+    }
+
+    .right-column {
+        height: auto;
+        gap: 20px;
+    }
+
+    .visualization-row {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .controls-panel {
+        width: 100%;
+        /* Full width on mobile */
+        height: auto;
+    }
+
+    .visualization-panel {
+        height: 400px;
+        /* Fixed height on mobile */
+        flex: none;
+    }
+
+    .graph-panel {
+        height: 280px;
+    }
+
+    .formula-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .formula-panel {
+        margin-top: 10px;
+    }
+}

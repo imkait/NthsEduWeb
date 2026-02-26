@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>探索減數分裂 (Meiosis) | 互動式生物教學</title>
+    <meta name="description" content="透過動畫模擬、互動拖放與遊戲化測驗，深入理解減數分裂的完整過程。這是一個專為學生設計的互動式教學網頁。">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- 粒子背景 Canvas -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- 導覽列 -->
+    <nav id="main-nav">
+        <div class="logo">
+            <span class="logo-icon">🧬</span>
+            <span class="logo-text">Meiosis Lab</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#intro" data-section="intro">導論</a></li>
+            <li><a href="#simulator" data-section="simulator">動畫模擬</a></li>
+            <li><a href="#crossing-over" data-section="crossing-over">互換體驗</a></li>
+            <li><a href="#comparison" data-section="comparison">比較表</a></li>
+            <li><a href="#quiz" data-section="quiz">測驗</a></li>
+        </ul>
+        <div class="burger" id="burger-menu">
+            <div class="line1"></div>
+            <div class="line2"></div>
+            <div class="line3"></div>
+        </div>
+    </nav>
+
+    <!-- 手機版側邊選單 -->
+    <div class="mobile-menu" id="mobile-menu">
+        <ul>
+            <li><a href="#intro">導論</a></li>
+            <li><a href="#simulator">動畫模擬</a></li>
+            <li><a href="#crossing-over">互換體驗</a></li>
+            <li><a href="#comparison">比較表</a></li>
+            <li><a href="#quiz">測驗</a></li>
+        </ul>
+    </div>
+
+    <!-- Hero Section -->
+    <header id="hero">
+        <div class="hero-content">
+            <span class="hero-tag">🔬 互動式生物教學</span>
+            <h1>解構生命的密碼<br><span class="gradient-text">減數分裂</span></h1>
+            <p>透過動畫模擬與互動體驗，探索遺傳與變異的奧秘，了解有性生殖如何產生遺傳多樣性，創造多樣化的生命。</p>
+            <div class="hero-buttons">
+                <a href="#simulator" class="btn-primary">
+                    <span>開始探索</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                </a>
+                <a href="#intro" class="btn-secondary">了解更多</a>
+            </div>
+            <div class="hero-stats">
+                <div class="stat">
+                    <span class="stat-number">2</span>
+                    <span class="stat-label">次分裂</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number">4</span>
+                    <span class="stat-label">個子細胞</span>
+                </div>
+                <div class="stat-divider"></div>
+                <div class="stat">
+                    <span class="stat-number">n</span>
+                    <span class="stat-label">單倍體</span>
+                </div>
+            </div>
+        </div>
+        <div class="hero-visual">
+            <!-- SVG 染色體動畫 -->
+            <div class="chromosome-container">
+                <svg class="chromosome-svg" viewBox="0 0 400 400">
+                    <!-- 染色體 1 (藍色) -->
+                    <g class="chromosome chr-1">
+                        <path d="M 150 80 Q 140 120 150 160 Q 160 200 150 240" stroke="url(#gradient-blue)"
+                            stroke-width="12" fill="none" stroke-linecap="round" />
+                        <path d="M 170 80 Q 180 120 170 160 Q 160 200 170 240" stroke="url(#gradient-blue)"
+                            stroke-width="12" fill="none" stroke-linecap="round" />
+                        <ellipse cx="160" cy="160" rx="15" ry="8" fill="#1e40af" />
+                    </g>
+                    <!-- 染色體 2 (紅色) -->
+                    <g class="chromosome chr-2">
+                        <path d="M 230 80 Q 220 120 230 160 Q 240 200 230 240" stroke="url(#gradient-red)"
+                            stroke-width="12" fill="none" stroke-linecap="round" />
+                        <path d="M 250 80 Q 260 120 250 160 Q 240 200 250 240" stroke="url(#gradient-red)"
+                            stroke-width="12" fill="none" stroke-linecap="round" />
+                        <ellipse cx="240" cy="160" rx="15" ry="8" fill="#991b1b" />
+                    </g>
+                    <!-- 漸層定義 -->
+                    <defs>
+                        <linearGradient id="gradient-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#3b82f6" />
+                            <stop offset="100%" stop-color="#1e40af" />
+                        </linearGradient>
+                        <linearGradient id="gradient-red" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#ef4444" />
+                            <stop offset="100%" stop-color="#991b1b" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <!-- 光暈效果 -->
+                <div class="glow glow-1"></div>
+                <div class="glow glow-2"></div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- 導論 Section -->
+        <section id="intro" class="section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag">📖 基礎概念</span>
+                    <h2>什麼是減數分裂？</h2>
+                    <p class="section-subtitle">了解生命傳承的核心機制</p>
+                </div>
+
+                <div class="intro-grid reveal">
+                    <div class="intro-card glass-card">
+                        <div class="card-icon">🧪</div>
+                        <h3>定義</h3>
+                        <p>減數分裂 (Meiosis) 是一種特殊的細胞分裂方式，主要發生在有性生殖的生物體內，目的是產生<strong>配子</strong>（精子與卵子）。</p>
+                    </div>
+                    <div class="intro-card glass-card">
+                        <div class="card-icon">📉</div>
+                        <h3>染色體減半</h3>
+                        <p>經過減數分裂後，染色體數目從雙倍體 <span class="highlight">(2n)</span> 變為單倍體 <span
+                                class="highlight">(n)</span>，確保物種染色體數目的穩定。</p>
+                    </div>
+                    <div class="intro-card glass-card">
+                        <div class="card-icon">🔀</div>
+                        <h3>基因重組</h3>
+                        <p>透過<strong>互換</strong>與<strong>自由組合</strong>，增加遺傳多樣性，讓後代不完全等同於親代，這是演化的重要基礎。</p>
+                    </div>
+                </div>
+
+                <div class="process-overview reveal">
+                    <h3>減數分裂流程總覽</h3>
+                    <div class="process-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker">1</div>
+                            <div class="timeline-content">
+                                <h4>減數分裂 I</h4>
+                                <p>同源染色體配對並分離</p>
+                            </div>
+                        </div>
+                        <div class="timeline-connector"></div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">2</div>
+                            <div class="timeline-content">
+                                <h4>減數分裂 II</h4>
+                                <p>姊妹染色分體分離</p>
+                            </div>
+                        </div>
+                        <div class="timeline-connector"></div>
+                        <div class="timeline-item">
+                            <div class="timeline-marker">✓</div>
+                            <div class="timeline-content">
+                                <h4>形成配子</h4>
+                                <p>4個單倍體子細胞</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 動畫模擬器 Section -->
+        <section id="simulator" class="section section-alt">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag">🎬 互動動畫</span>
+                    <h2>減數分裂模擬器</h2>
+                    <p class="section-subtitle">逐步觀察完整的分裂過程</p>
+                </div>
+
+                <div class="simulator-wrapper reveal">
+                    <div class="simulator-stage" id="simulator-stage">
+                        <!-- 動態產生的 SVG 動畫區域 -->
+                        <svg id="meiosis-svg" viewBox="0 0 800 500">
+                            <!-- 細胞膜 -->
+                            <ellipse class="cell-membrane" cx="400" cy="250" rx="350" ry="200" fill="none"
+                                stroke="url(#membrane-gradient)" stroke-width="4" />
+
+                            <!-- 紡錘絲（初始隱藏） -->
+                            <g id="spindle-fibers" class="spindle hidden">
+                                <line x1="50" y1="250" x2="200" y2="250" stroke="#6b7280" stroke-width="2"
+                                    stroke-dasharray="5,5" />
+                                <line x1="750" y1="250" x2="600" y2="250" stroke="#6b7280" stroke-width="2"
+                                    stroke-dasharray="5,5" />
+                            </g>
+
+                            <!-- 染色體群組 -->
+                            <g id="chromosomes-group">
+                                <!-- 會透過 JavaScript 動態更新 -->
+                            </g>
+
+                            <!-- 固定圖例說明（始終顯示於橢圓下方） -->
+                            <g id="legend-bar" text-anchor="middle">
+                                <text x="400" y="475" font-size="11">
+                                    <tspan fill="#22c55e" font-weight="600">N</tspan>
+                                    <tspan fill="#9ca3af">：染色體倍數</tspan>
+                                    <tspan fill="#9ca3af" dx="12">｜</tspan>
+                                    <tspan fill="#22d3ee" font-weight="600">a</tspan>
+                                    <tspan fill="#9ca3af">：DNA 含量</tspan>
+                                    <tspan fill="#9ca3af" dx="12">｜</tspan>
+                                    <tspan fill="#60a5fa" font-weight="600">●</tspan>
+                                    <tspan fill="#60a5fa"> 藍色：父源</tspan>
+                                    <tspan fill="#9ca3af" dx="12">｜</tspan>
+                                    <tspan fill="#f87171" font-weight="600">●</tspan>
+                                    <tspan fill="#f87171"> 紅色：母源</tspan>
+                                </text>
+                            </g>
+
+                            <!-- 漸層定義 -->
+                            <defs>
+                                <linearGradient id="membrane-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                    <stop offset="0%" stop-color="#22d3ee" />
+                                    <stop offset="100%" stop-color="#0891b2" />
+                                </linearGradient>
+                                <linearGradient id="chr-blue" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#60a5fa" />
+                                    <stop offset="100%" stop-color="#2563eb" />
+                                </linearGradient>
+                                <linearGradient id="chr-red" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#f87171" />
+                                    <stop offset="100%" stop-color="#dc2626" />
+                                </linearGradient>
+                                <linearGradient id="chr-green" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#4ade80" />
+                                    <stop offset="100%" stop-color="#16a34a" />
+                                </linearGradient>
+                                <linearGradient id="chr-purple" x1="0%" y1="0%" x2="0%" y2="100%">
+                                    <stop offset="0%" stop-color="#c084fc" />
+                                    <stop offset="100%" stop-color="#9333ea" />
+                                </linearGradient>
+                            </defs>
+                        </svg>
+
+                        <!-- 階段標籤 -->
+                        <div class="stage-label" id="stage-label">間期</div>
+                    </div>
+
+                    <!-- 控制列 -->
+                    <div class="simulator-controls">
+                        <div class="control-buttons">
+                            <button class="control-btn" id="btn-prev" title="上一步">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M19 12H5M12 19l-7-7 7-7" />
+                                </svg>
+                            </button>
+                            <button class="control-btn play-btn" id="btn-play" title="播放/暫停">
+                                <svg class="icon-play" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                                    <path d="M8 5v14l11-7z" />
+                                </svg>
+                                <svg class="icon-pause hidden" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="currentColor">
+                                    <path d="M6 4h4v16H6zM14 4h4v16h-4z" />
+                                </svg>
+                            </button>
+                            <button class="control-btn" id="btn-next" title="下一步">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                            <button class="control-btn" id="btn-reset" title="重置">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                                    <path d="M3 3v5h5" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div class="progress-bar">
+                            <div class="progress-track">
+                                <div class="progress-fill" id="progress-fill"></div>
+                            </div>
+                            <div class="progress-steps" id="progress-steps">
+                                <!-- 動態產生步驟點 -->
+                            </div>
+                        </div>
+
+                        <div class="speed-control">
+                            <label>速度</label>
+                            <input type="range" id="speed-slider" min="0.5" max="2" step="0.25" value="1">
+                            <span id="speed-value">1x</span>
+                        </div>
+                    </div>
+
+                    <!-- 說明面板 -->
+                    <div class="info-panel glass-card">
+                        <h3 id="info-title">間期 (Interphase)</h3>
+                        <p id="info-description">細胞在進行減數分裂前，DNA 會先進行複製，形成由兩條姊妹染色分體組成的染色體。</p>
+                        <div class="info-highlights" id="info-highlights">
+                            <span class="highlight-tag">DNA 複製</span>
+                            <span class="highlight-tag">染色體形成</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 互換體驗 Section -->
+        <section id="crossing-over" class="section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag">🎮 拖放體驗</span>
+                    <h2>染色體互換 (Crossing Over)</h2>
+                    <p class="section-subtitle">拖曳染色體片段，體驗基因重組的過程</p>
+                </div>
+
+                <div class="crossing-over-wrapper reveal">
+                    <div class="crossing-over-instructions glass-card">
+                        <h3>🎯 操作說明</h3>
+                        <ol>
+                            <li>將 <span class="chr-tag blue">藍色染色體</span> 的片段拖曳到 <span class="chr-tag red">紅色染色體</span>
+                                的對應位置</li>
+                            <li>觀察基因片段如何互換</li>
+                            <li>完成後查看重組結果</li>
+                        </ol>
+                    </div>
+
+                    <div class="crossing-over-stage" id="crossing-over-stage">
+                        <div class="chr-pair">
+                            <!-- 藍色染色體 -->
+                            <div class="chromosome-drag chr-blue-drag" id="chr-blue-left">
+                                <div class="chr-segment" data-segment="1" draggable="true">A</div>
+                                <div class="chr-segment" data-segment="2" draggable="true">B</div>
+                                <div class="chr-segment" data-segment="3" draggable="true">C</div>
+                                <div class="chr-centromere"></div>
+                                <div class="chr-segment" data-segment="4" draggable="true">D</div>
+                                <div class="chr-segment" data-segment="5" draggable="true">E</div>
+                            </div>
+
+                            <!-- 互換區域指示 -->
+                            <div class="crossing-zone">
+                                <div class="zone-label">互換區</div>
+                                <div class="zone-arrows">
+                                    <span>⟵</span>
+                                    <span>⟶</span>
+                                </div>
+                            </div>
+
+                            <!-- 紅色染色體 -->
+                            <div class="chromosome-drag chr-red-drag" id="chr-red-right">
+                                <div class="chr-segment drop-zone" data-segment="1">a</div>
+                                <div class="chr-segment drop-zone" data-segment="2">b</div>
+                                <div class="chr-segment drop-zone" data-segment="3">c</div>
+                                <div class="chr-centromere"></div>
+                                <div class="chr-segment drop-zone" data-segment="4">d</div>
+                                <div class="chr-segment drop-zone" data-segment="5">e</div>
+                            </div>
+                        </div>
+
+                        <!-- 結果顯示區 -->
+                        <div class="crossing-result hidden" id="crossing-result">
+                            <h4>🎉 互換完成！</h4>
+                            <p>透過互換，原本在同一條染色體上的基因組合被打散，產生了新的基因組合。這就是為什麼即使親代相同，後代的性狀仍有差異！</p>
+                            <button class="btn-secondary" id="btn-reset-crossing">重新體驗</button>
+                        </div>
+                    </div>
+
+                    <div class="crossing-info glass-card">
+                        <h3>💡 科學小知識</h3>
+                        <p>互換發生在減數分裂 I 的<strong>前期 I</strong>，當同源染色體緊密配對形成<strong>聯會複合體</strong>時，非姊妹染色分體會在交叉點 (Chiasma)
+                            互換片段。</p>
+                        <p>每次減數分裂平均會發生 <span class="highlight">2-3 次</span> 互換，大幅增加子代的遺傳變異！</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 比較表 Section -->
+        <section id="comparison" class="section section-alt">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag">⚖️ 深度比較</span>
+                    <h2>有絲分裂 vs 減數分裂</h2>
+                    <p class="section-subtitle">點擊卡片翻轉查看詳細比較</p>
+                </div>
+
+                <div class="comparison-grid reveal">
+                    <!-- 分裂次數 -->
+                    <div class="flip-card" data-category="division">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card-icon">🔢</div>
+                                <h3>分裂次數</h3>
+                                <p>點擊翻轉</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="comparison-detail">
+                                    <div class="compare-item mitosis">
+                                        <span class="compare-label">有絲分裂</span>
+                                        <span class="compare-value">1 次</span>
+                                    </div>
+                                    <div class="compare-divider">vs</div>
+                                    <div class="compare-item meiosis">
+                                        <span class="compare-label">減數分裂</span>
+                                        <span class="compare-value">2 次</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 子細胞數目 -->
+                    <div class="flip-card" data-category="cells">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card-icon">🔬</div>
+                                <h3>子細胞數目</h3>
+                                <p>點擊翻轉</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="comparison-detail">
+                                    <div class="compare-item mitosis">
+                                        <span class="compare-label">有絲分裂</span>
+                                        <span class="compare-value">2 個</span>
+                                    </div>
+                                    <div class="compare-divider">vs</div>
+                                    <div class="compare-item meiosis">
+                                        <span class="compare-label">減數分裂</span>
+                                        <span class="compare-value">4 個</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 染色體數目 -->
+                    <div class="flip-card" data-category="chromosomes">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card-icon">🧬</div>
+                                <h3>子細胞染色體</h3>
+                                <p>點擊翻轉</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="comparison-detail">
+                                    <div class="compare-item mitosis">
+                                        <span class="compare-label">有絲分裂</span>
+                                        <span class="compare-value">2n (雙倍體)</span>
+                                    </div>
+                                    <div class="compare-divider">vs</div>
+                                    <div class="compare-item meiosis">
+                                        <span class="compare-label">減數分裂</span>
+                                        <span class="compare-value">n (單倍體)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 遺傳組成 -->
+                    <div class="flip-card" data-category="genetics">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card-icon">🔀</div>
+                                <h3>遺傳組成</h3>
+                                <p>點擊翻轉</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="comparison-detail">
+                                    <div class="compare-item mitosis">
+                                        <span class="compare-label">有絲分裂</span>
+                                        <span class="compare-value">與親代相同</span>
+                                    </div>
+                                    <div class="compare-divider">vs</div>
+                                    <div class="compare-item meiosis">
+                                        <span class="compare-label">減數分裂</span>
+                                        <span class="compare-value">基因重組</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 功能 -->
+                    <div class="flip-card" data-category="function">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card-icon">⚡</div>
+                                <h3>主要功能</h3>
+                                <p>點擊翻轉</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="comparison-detail">
+                                    <div class="compare-item mitosis">
+                                        <span class="compare-label">有絲分裂</span>
+                                        <span class="compare-value">生長、修復</span>
+                                    </div>
+                                    <div class="compare-divider">vs</div>
+                                    <div class="compare-item meiosis">
+                                        <span class="compare-label">減數分裂</span>
+                                        <span class="compare-value">有性生殖</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 發生位置 -->
+                    <div class="flip-card" data-category="location">
+                        <div class="flip-card-inner">
+                            <div class="flip-card-front">
+                                <div class="card-icon">📍</div>
+                                <h3>發生位置</h3>
+                                <p>點擊翻轉</p>
+                            </div>
+                            <div class="flip-card-back">
+                                <div class="comparison-detail">
+                                    <div class="compare-item mitosis">
+                                        <span class="compare-label">有絲分裂</span>
+                                        <span class="compare-value">體細胞（全身）</span>
+                                    </div>
+                                    <div class="compare-divider">vs</div>
+                                    <div class="compare-item meiosis">
+                                        <span class="compare-label">減數分裂</span>
+                                        <span class="compare-value">精細胞、卵細胞(精巢 / 卵巢)</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 測驗 Section -->
+        <section id="quiz" class="section">
+            <div class="container">
+                <div class="section-header reveal">
+                    <span class="section-tag">📝 自我檢測</span>
+                    <h2>互動測驗</h2>
+                    <p class="section-subtitle">測試你對減數分裂的理解程度</p>
+                </div>
+
+                <div class="quiz-wrapper reveal">
+                    <div class="quiz-container glass-card" id="quiz-container">
+                        <!-- 進度顯示 -->
+                        <div class="quiz-progress">
+                            <div class="quiz-progress-bar">
+                                <div class="quiz-progress-fill" id="quiz-progress-fill"></div>
+                            </div>
+                            <span class="quiz-progress-text" id="quiz-progress-text">題目 1 / 9</span>
+                        </div>
+
+                        <!-- 題目區域 -->
+                        <div class="quiz-question" id="quiz-question">
+                            <h3 id="question-text">載入中...</h3>
+                        </div>
+
+                        <!-- 選項區域 -->
+                        <div class="quiz-options" id="quiz-options">
+                            <!-- 動態產生選項 -->
+                        </div>
+
+                        <!-- 回饋區域 -->
+                        <div class="quiz-feedback hidden" id="quiz-feedback">
+                            <div class="feedback-icon" id="feedback-icon"></div>
+                            <p id="feedback-text"></p>
+                        </div>
+
+                        <!-- 按鈕區域 -->
+                        <div class="quiz-actions">
+                            <button class="btn-primary hidden" id="btn-next-question">
+                                下一題
+                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M5 12h14M12 5l7 7-7 7" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 結果區域 -->
+                    <div class="quiz-result glass-card hidden" id="quiz-result">
+                        <div class="result-icon" id="result-icon"></div>
+                        <h3 id="result-title">測驗完成！</h3>
+                        <div class="result-score">
+                            <span class="score-number" id="score-number">0</span>
+                            <span class="score-total">/ 9</span>
+                        </div>
+                        <p id="result-message"></p>
+                        <button class="btn-primary" id="btn-restart-quiz">
+                            重新測驗
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <span class="logo-icon">🧬</span>
+                    <span>Meiosis Lab</span>
+                </div>
+                <p>&copy; 2026 減數分裂互動教學網頁 | 專為生物學習設計</p>
+                <div class="footer-links">
+                    <a href="#intro">導論</a>
+                    <a href="#simulator">動畫模擬</a>
+                    <a href="#crossing-over">互換體驗</a>
+                    <a href="#quiz">測驗</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <!-- 返回入口網頁按鈕 -->
+    <a href="../index.html" class="back-to-home-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        回到首頁
+    </a>
+    <style>
+        .back-to-home-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0f4c81;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        .back-to-home-btn:hover {
+            background-color: #2c7da0;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-to-home-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</body>
+
+</html>

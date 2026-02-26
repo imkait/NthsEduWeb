@@ -1,0 +1,40 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 20px;
+}
+
+h1 {
+    color: #333;
+}
+
+#controls {
+    margin-bottom: 20px;
+}
+
+#optics-canvas {
+    border: 1px solid #000;
+    background-color: #f9f9f9;
+}
+
+#legend {
+    margin-top: 20px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-size: 1.1em;
+}
+
+.ray-parallel {
+    color: #FECA57;
+    text-shadow: 0.5px 0.5px 0px #000;
+}
+
+.ray-center {
+    color: #1DD1A1;
+}
+
+.ray-focus {
+    color: #FF6B6B;
+}

@@ -1,0 +1,1516 @@
+/* =============================================
+   減數分裂互動教學網頁 - 樣式表
+   =============================================
+   此樣式表包含：
+   1. CSS 變數 (根變數)
+   2. 全域重設與基礎樣式
+   3. 導覽列樣式
+   4. Hero 區塊樣式
+   5. 各 Section 樣式
+   6. 動畫模擬器樣式
+   7. 拖放互換體驗樣式
+   8. 翻牌比較表樣式
+   9. 測驗區樣式
+   10. 動畫關鍵幀
+   11. 響應式設計
+   ============================================= */
+
+/* ===========================================
+   1. CSS 變數 (根變數)
+   =========================================== */
+:root {
+    /* 主要色彩 - 生物學主題藍綠色系 */
+    --primary-hue: 195;
+    --primary-color: hsl(var(--primary-hue), 85%, 50%);
+    --primary-light: hsl(var(--primary-hue), 85%, 65%);
+    --primary-dark: hsl(var(--primary-hue), 85%, 35%);
+
+    /* 強調色 */
+    --accent-color: hsl(280, 70%, 60%);
+    --accent-light: hsl(280, 70%, 75%);
+
+    /* 背景色 - 深色主題 */
+    --bg-primary: #0a0f1a;
+    --bg-secondary: #111827;
+    --bg-card: rgba(17, 24, 39, 0.7);
+
+    /* 文字色 */
+    --text-primary: #f3f4f6;
+    --text-secondary: #9ca3af;
+    --text-muted: #6b7280;
+
+    /* 玻璃擬態 */
+    --glass-bg: rgba(255, 255, 255, 0.05);
+    --glass-border: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+
+    /* 染色體顏色 */
+    --chr-blue: #3b82f6;
+    --chr-red: #ef4444;
+    --chr-green: #22c55e;
+    --chr-purple: #a855f7;
+
+    /* 狀態顏色 */
+    --success: #22c55e;
+    --error: #ef4444;
+    --warning: #f59e0b;
+
+    /* 字型 */
+    --font-main: 'Inter', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* 間距 */
+    --nav-height: 70px;
+    --section-padding: 100px;
+
+    /* 動畫 */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+}
+
+/* ===========================================
+   2. 全域重設與基礎樣式
+   =========================================== */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: var(--font-main);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+    min-height: 100vh;
+}
+
+/* 粒子背景 Canvas */
+#particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+/* 容器 */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+/* 玻璃卡片 */
+.glass-card {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    box-shadow: var(--glass-shadow);
+}
+
+/* 強調文字 */
+.highlight {
+    color: var(--primary-light);
+    font-weight: 600;
+}
+
+/* 漸層文字 */
+.gradient-text {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* ===========================================
+   3. 導覽列樣式
+   =========================================== */
+#main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: var(--nav-height);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
+    background: rgba(10, 15, 26, 0.85);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--glass-border);
+    z-index: 1000;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.4rem;
+    font-weight: 800;
+}
+
+.logo-icon {
+    font-size: 1.6rem;
+}
+
+.logo-text {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 2rem;
+}
+
+.nav-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color var(--transition-fast);
+    position: relative;
+}
+
+.nav-links a::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--primary-color);
+    transition: width var(--transition-fast);
+}
+
+.nav-links a:hover {
+    color: var(--text-primary);
+}
+
+.nav-links a:hover::after {
+    width: 100%;
+}
+
+/* 漢堡選單 */
+.burger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.burger div {
+    width: 25px;
+    height: 3px;
+    background: var(--text-primary);
+    border-radius: 2px;
+    transition: all var(--transition-fast);
+}
+
+.burger.active .line1 {
+    transform: rotate(45deg) translate(5px, 6px);
+}
+
+.burger.active .line2 {
+    opacity: 0;
+}
+
+.burger.active .line3 {
+    transform: rotate(-45deg) translate(5px, -6px);
+}
+
+/* 手機選單 */
+.mobile-menu {
+    display: none;
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    background: rgba(10, 15, 26, 0.95);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    padding: 2rem;
+    z-index: 999;
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: all var(--transition-normal);
+}
+
+.mobile-menu.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.mobile-menu ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.mobile-menu a {
+    color: var(--text-primary);
+    text-decoration: none;
+    font-size: 1.1rem;
+    padding: 0.75rem 1rem;
+    display: block;
+    border-radius: 10px;
+    transition: background var(--transition-fast);
+}
+
+.mobile-menu a:hover {
+    background: var(--glass-bg);
+}
+
+/* ===========================================
+   4. Hero 區塊樣式
+   =========================================== */
+#hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: calc(var(--nav-height) + 2rem) 5% 4rem;
+    position: relative;
+    overflow: hidden;
+}
+
+#hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(168, 85, 247, 0.1) 0%, transparent 40%);
+    z-index: 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.hero-tag {
+    display: inline-block;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: var(--primary-light);
+    padding: 0.5rem 1rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.hero-content h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 900;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+}
+
+.hero-content p {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+    max-width: 500px;
+    margin-bottom: 2rem;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+}
+
+.btn-primary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    cursor: pointer;
+    transition: all var(--transition-normal);
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+}
+
+.btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1rem 2rem;
+    background: transparent;
+    color: var(--text-primary);
+    text-decoration: none;
+    border-radius: 50px;
+    font-weight: 600;
+    font-size: 1rem;
+    border: 1px solid var(--glass-border);
+    cursor: pointer;
+    transition: all var(--transition-normal);
+}
+
+.btn-secondary:hover {
+    background: var(--glass-bg);
+    border-color: var(--primary-color);
+}
+
+/* Hero 統計數據 */
+.hero-stats {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.stat {
+    text-align: center;
+}
+
+.stat-number {
+    display: block;
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary-light);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.stat-divider {
+    width: 1px;
+    height: 40px;
+    background: var(--glass-border);
+}
+
+/* Hero 視覺區 */
+.hero-visual {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.chromosome-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+}
+
+.chromosome-svg {
+    width: 100%;
+    height: auto;
+    animation: heroFloat 6s ease-in-out infinite;
+}
+
+.chromosome {
+    animation: chromosomePulse 3s ease-in-out infinite;
+}
+
+.chr-2 {
+    animation-delay: 1.5s;
+}
+
+/* 光暈效果 */
+.glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.5;
+    animation: glowPulse 4s ease-in-out infinite;
+}
+
+.glow-1 {
+    width: 200px;
+    height: 200px;
+    background: var(--chr-blue);
+    top: 10%;
+    left: 20%;
+}
+
+.glow-2 {
+    width: 180px;
+    height: 180px;
+    background: var(--chr-red);
+    bottom: 20%;
+    right: 20%;
+    animation-delay: 2s;
+}
+
+/* ===========================================
+   5. Section 通用樣式
+   =========================================== */
+.section {
+    padding: var(--section-padding) 0;
+    position: relative;
+}
+
+.section-alt {
+    background: var(--bg-secondary);
+}
+
+.section-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-tag {
+    display: inline-block;
+    background: rgba(59, 130, 246, 0.15);
+    border: 1px solid rgba(59, 130, 246, 0.3);
+    color: var(--primary-light);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+.section-header h2 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 800;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    font-size: 1.1rem;
+    color: var(--text-secondary);
+}
+
+/* ===========================================
+   導論區塊樣式
+   =========================================== */
+.intro-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+.intro-card {
+    padding: 2rem;
+    text-align: center;
+    transition: transform var(--transition-normal);
+}
+
+.intro-card:hover {
+    transform: translateY(-5px);
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.intro-card h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--primary-light);
+}
+
+.intro-card p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+}
+
+/* 流程時間軸 */
+.process-overview {
+    background: var(--glass-bg);
+    border-radius: 20px;
+    padding: 3rem;
+    border: 1px solid var(--glass-border);
+}
+
+.process-overview h3 {
+    text-align: center;
+    font-size: 1.5rem;
+    margin-bottom: 2rem;
+    color: var(--primary-light);
+}
+
+.process-timeline {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.timeline-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 200px;
+}
+
+.timeline-marker {
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.timeline-content h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-content p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.timeline-connector {
+    width: 60px;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+}
+
+/* ===========================================
+   6. 動畫模擬器樣式
+   =========================================== */
+.simulator-wrapper {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.simulator-stage {
+    background: var(--bg-primary);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+#meiosis-svg {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.cell-membrane {
+    transition: all 1s ease;
+}
+
+.stage-label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 0.5rem 1.5rem;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid var(--glass-border);
+}
+
+/* 控制列 */
+.simulator-controls {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    padding: 1.5rem 2rem;
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-radius: 15px;
+    border: 1px solid var(--glass-border);
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.control-btn {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    color: var(--text-primary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all var(--transition-fast);
+}
+
+.control-btn:hover {
+    background: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.control-btn.play-btn {
+    width: 56px;
+    height: 56px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border: none;
+}
+
+.control-btn.play-btn:hover {
+    transform: scale(1.05);
+}
+
+.icon-pause.hidden,
+.icon-play.hidden {
+    display: none;
+}
+
+/* 進度條 */
+.progress-bar {
+    flex: 1;
+    min-width: 200px;
+}
+
+.progress-track {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 4px;
+    transition: width var(--transition-normal);
+}
+
+.progress-steps {
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-step {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+}
+
+.progress-step.active {
+    background: var(--primary-color);
+    box-shadow: 0 0 10px var(--primary-color);
+}
+
+.progress-step.completed {
+    background: var(--success);
+}
+
+/* 速度控制 */
+.speed-control {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.speed-control label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.speed-control input[type="range"] {
+    width: 80px;
+    height: 6px;
+    -webkit-appearance: none;
+    appearance: none;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+    cursor: pointer;
+}
+
+.speed-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px;
+    height: 16px;
+    background: var(--primary-color);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#speed-value {
+    font-size: 0.9rem;
+    font-weight: 600;
+    min-width: 30px;
+}
+
+/* 資訊面板 */
+.info-panel {
+    padding: 2rem;
+}
+
+.info-panel h3 {
+    font-size: 1.3rem;
+    margin-bottom: 1rem;
+    color: var(--primary-light);
+}
+
+.info-panel p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.info-highlights {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.highlight-tag {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--primary-light);
+    padding: 0.4rem 1rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* ===========================================
+   7. 拖放互換體驗樣式
+   =========================================== */
+.crossing-over-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.crossing-over-instructions {
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+.crossing-over-instructions h3 {
+    margin-bottom: 1rem;
+    color: var(--primary-light);
+}
+
+.crossing-over-instructions ol {
+    padding-left: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.crossing-over-instructions li {
+    margin-bottom: 0.75rem;
+}
+
+.chr-tag {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.chr-tag.blue {
+    background: rgba(59, 130, 246, 0.2);
+    color: var(--chr-blue);
+}
+
+.chr-tag.red {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--chr-red);
+}
+
+/* 互換舞台 */
+.crossing-over-stage {
+    background: var(--bg-primary);
+    border-radius: 20px;
+    border: 1px solid var(--glass-border);
+    padding: 3rem;
+    margin-bottom: 2rem;
+}
+
+.chr-pair {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.chromosome-drag {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.chr-segment {
+    width: 60px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    cursor: grab;
+    transition: all var(--transition-fast);
+    user-select: none;
+}
+
+.chr-segment:active {
+    cursor: grabbing;
+}
+
+.chr-blue-drag .chr-segment {
+    background: linear-gradient(135deg, #60a5fa, #2563eb);
+    color: white;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+}
+
+.chr-red-drag .chr-segment {
+    background: linear-gradient(135deg, #f87171, #dc2626);
+    color: white;
+    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+}
+
+.chr-segment.drop-zone {
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+}
+
+.chr-segment.drop-zone.drag-over {
+    border-color: var(--primary-color);
+    background: rgba(59, 130, 246, 0.2) !important;
+    transform: scale(1.05);
+}
+
+.chr-segment.swapped {
+    animation: swapPulse 0.5s ease;
+}
+
+.chr-centromere {
+    width: 20px;
+    height: 10px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 5px;
+}
+
+/* 互換區域 */
+.crossing-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.zone-label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    background: var(--glass-bg);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+.zone-arrows {
+    display: flex;
+    gap: 1rem;
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    animation: arrowPulse 1.5s ease-in-out infinite;
+}
+
+/* 結果顯示 */
+.crossing-result {
+    text-align: center;
+    padding: 2rem;
+    background: rgba(34, 197, 94, 0.1);
+    border-radius: 15px;
+    margin-top: 2rem;
+}
+
+.crossing-result h4 {
+    font-size: 1.5rem;
+    color: var(--success);
+    margin-bottom: 1rem;
+}
+
+.crossing-result p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+    line-height: 1.7;
+}
+
+/* 科學小知識 */
+.crossing-info {
+    padding: 2rem;
+}
+
+.crossing-info h3 {
+    color: var(--primary-light);
+    margin-bottom: 1rem;
+}
+
+.crossing-info p {
+    color: var(--text-secondary);
+    line-height: 1.7;
+    margin-bottom: 1rem;
+}
+
+/* ===========================================
+   8. 翻牌比較表樣式
+   =========================================== */
+.comparison-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+
+.flip-card {
+    height: 220px;
+    perspective: 1000px;
+    cursor: pointer;
+}
+
+.flip-card-inner {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+}
+
+.flip-card.flipped .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+}
+
+.flip-card-front {
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+}
+
+.flip-card-front .card-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.flip-card-front h3 {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.flip-card-front p {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.flip-card-back {
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(168, 85, 247, 0.2));
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--glass-border);
+    transform: rotateY(180deg);
+}
+
+.comparison-detail {
+    width: 100%;
+}
+
+.compare-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    margin-bottom: 0.5rem;
+}
+
+.compare-item.mitosis {
+    background: rgba(34, 197, 94, 0.15);
+}
+
+.compare-item.meiosis {
+    background: rgba(168, 85, 247, 0.15);
+}
+
+.compare-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.compare-value {
+    font-weight: 600;
+}
+
+.compare-divider {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0.5rem 0;
+}
+
+/* ===========================================
+   9. 測驗區樣式
+   =========================================== */
+.quiz-wrapper {
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.quiz-container {
+    padding: 2.5rem;
+}
+
+.quiz-progress {
+    margin-bottom: 2rem;
+}
+
+.quiz-progress-bar {
+    height: 8px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.75rem;
+}
+
+.quiz-progress-fill {
+    height: 100%;
+    width: 20%;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 4px;
+    transition: width var(--transition-normal);
+}
+
+.quiz-progress-text {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.quiz-question {
+    margin-bottom: 2rem;
+}
+
+.quiz-question h3 {
+    font-size: 1.3rem;
+    line-height: 1.6;
+}
+
+.quiz-options {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.quiz-option {
+    padding: 1.25rem 1.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-align: left;
+    font-size: 1rem;
+    color: var(--text-primary);
+    font-family: var(--font-main);
+}
+
+.quiz-option:hover:not(:disabled) {
+    background: rgba(59, 130, 246, 0.1);
+    border-color: var(--primary-color);
+}
+
+.quiz-option.selected {
+    border-color: var(--primary-color);
+    background: rgba(59, 130, 246, 0.15);
+}
+
+.quiz-option.correct {
+    background: rgba(34, 197, 94, 0.2);
+    border-color: var(--success);
+}
+
+.quiz-option.wrong {
+    background: rgba(239, 68, 68, 0.2);
+    border-color: var(--error);
+}
+
+.quiz-option:disabled {
+    cursor: not-allowed;
+}
+
+/* 回饋區 */
+.quiz-feedback {
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.quiz-feedback.correct {
+    background: rgba(34, 197, 94, 0.1);
+}
+
+.quiz-feedback.wrong {
+    background: rgba(239, 68, 68, 0.1);
+}
+
+.feedback-icon {
+    font-size: 1.5rem;
+}
+
+.quiz-feedback p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+}
+
+.quiz-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 結果區 */
+.quiz-result {
+    padding: 3rem;
+    text-align: center;
+}
+
+.result-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+}
+
+.quiz-result h3 {
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.result-score {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.score-number {
+    font-size: 4rem;
+    font-weight: 800;
+    color: var(--primary-light);
+}
+
+.score-total {
+    font-size: 1.5rem;
+    color: var(--text-secondary);
+}
+
+.quiz-result p {
+    color: var(--text-secondary);
+    margin-bottom: 2rem;
+}
+
+/* ===========================================
+   Footer 樣式
+   =========================================== */
+footer {
+    background: var(--bg-secondary);
+    padding: 3rem 0;
+    border-top: 1px solid var(--glass-border);
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    text-align: center;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.footer-content p {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.footer-links {
+    display: flex;
+    gap: 2rem;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color var(--transition-fast);
+}
+
+.footer-links a:hover {
+    color: var(--primary-color);
+}
+
+/* ===========================================
+   10. 動畫關鍵幀
+   =========================================== */
+@keyframes heroFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+@keyframes chromosomePulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.8;
+    }
+}
+
+@keyframes glowPulse {
+
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.6;
+        transform: scale(1.1);
+    }
+}
+
+@keyframes swapPulse {
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.15);
+    }
+
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes arrowPulse {
+
+    0%,
+    100% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+    }
+}
+
+/* Reveal 動畫 */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 隱藏類別 */
+.hidden {
+    display: none !important;
+}
+
+/* ===========================================
+   11. 響應式設計
+   =========================================== */
+@media screen and (max-width: 1024px) {
+    :root {
+        --section-padding: 80px;
+    }
+
+    #hero {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 3rem;
+    }
+
+    .hero-content p {
+        margin: 0 auto 2rem;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+    }
+
+    .hero-stats {
+        justify-content: center;
+    }
+
+    .intro-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .comparison-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .process-timeline {
+        flex-direction: column;
+    }
+
+    .timeline-connector {
+        width: 2px;
+        height: 30px;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .nav-links {
+        display: none;
+    }
+
+    .burger {
+        display: flex;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .hero-stats {
+        flex-wrap: wrap;
+    }
+
+    .simulator-controls {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .progress-bar {
+        width: 100%;
+    }
+
+    .chr-pair {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .crossing-zone {
+        margin: 1rem 0;
+    }
+
+    .zone-arrows {
+        flex-direction: column;
+    }
+
+    .comparison-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .flip-card {
+        height: 200px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .container {
+        padding: 0 4%;
+    }
+
+    .section-header h2 {
+        font-size: 1.6rem;
+    }
+
+    .quiz-container {
+        padding: 1.5rem;
+    }
+
+    .chr-segment {
+        width: 50px;
+        height: 35px;
+        font-size: 1rem;
+    }
+}

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-tw">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光的折射與反射教學網頁</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1>光的折射與反射教學</h1>
+    <div id="controls">
+        <label for="optics-select">選擇光學元件：</label>
+        <select id="optics-select">
+            <option value="convex-lens">凸透鏡</option>
+            <option value="concave-lens">凹透鏡</option>
+            <option value="convex-mirror">凸面鏡</option>
+            <option value="concave-mirror">凹面鏡</option>
+        </select>
+    </div>
+    <div id="legend">
+        <span class="ray-parallel">● 平行主軸過焦點</span>
+        <span class="ray-center">● 過鏡心不折射</span>
+        <span class="ray-focus">● 過焦點平行軸</span>
+    </div>
+
+    <canvas id="optics-canvas" width="800" height="400"></canvas>
+
+    <script src="script.js"></script>
+    <!-- 返回入口網頁按鈕 -->
+    <a href="../index.html" class="back-to-home-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        回到首頁
+    </a>
+    <style>
+        .back-to-home-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0f4c81;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        .back-to-home-btn:hover {
+            background-color: #2c7da0;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-to-home-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</body>
+
+</html>

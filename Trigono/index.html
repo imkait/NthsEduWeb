@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>互動式三角函數教學 | Interactive Trigonometry</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts for premium typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="main-header">
+            <h1>互動式三角函數</h1>
+            <p class="subtitle">探索 Sin, Cos, Tan 的幾何意義</p>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+
+            <!-- Left Panel: Info & Values -->
+            <section class="panel info-panel">
+                <div class="panel-header">
+                    <h2>數值資訊</h2>
+                </div>
+                <div class="value-group">
+                    <div class="value-item">
+                        <span class="label">角度 Angle (θ)</span>
+                        <div class="value-display">
+                            <span id="angle-deg">0°</span>
+                            <span class="divider">|</span>
+                            <span id="angle-rad">0π</span>
+                        </div>
+                    </div>
+
+                    <div class="value-item">
+                        <div class="value-display math-font func-row">
+                            <span class="func-label highlight-sin">SIN</span>
+                            <span class="func-angle current-angle">0°</span>
+                            <span class="func-eq">=</span>
+                            <span id="val-sin">0</span>
+                            <span class="func-eq">=</span>
+                            <span class="func-identity" id="identity-sin">SIN(180°-0°)</span>
+                            <span class="func-eq">=</span>
+                            <span class="func-identity" id="identity-sin-co">COS(90°-0°)</span>
+                        </div>
+                    </div>
+
+                    <div class="value-item">
+                        <div class="value-display math-font func-row">
+                            <span class="func-label highlight-cos">COS</span>
+                            <span class="func-angle current-angle">0°</span>
+                            <span class="func-eq">=</span>
+                            <span id="val-cos">1</span>
+                            <span class="func-eq">=</span>
+                            <span class="func-identity" id="identity-cos">COS(360°-0°)</span>
+                            <span class="func-eq">=</span>
+                            <span class="func-identity" id="identity-cos-co">SIN(90°-0°)</span>
+                        </div>
+                    </div>
+
+                    <div class="value-item">
+                        <div class="value-display math-font func-row">
+                            <span class="func-label highlight-tan">TAN</span>
+                            <span class="func-angle current-angle">0°</span>
+                            <span class="func-eq">=</span>
+                            <span id="val-tan">0</span>
+                            <span class="func-eq">=</span>
+                            <span class="func-identity" id="identity-tan">TAN(180°+0°)</span>
+                            <span class="func-eq">=</span>
+                            <span class="func-identity" id="identity-tan-co">COT(90°-0°)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="info-note">
+                    <p>當角度為 180°±θ 或 360°±θ 時，函數不需轉換</p>
+                    <p>當角度為 90°±θ 或 270°±θ 時，則函數需轉換</p>
+                </div>
+            </section>
+
+            <!-- Right Column: Visualization & Graphs -->
+            <div class="right-column">
+                <!-- Top Row: Unit Circle & Controls -->
+                <div class="visualization-row">
+                    <!-- Unit Circle Interaction -->
+                    <section class="panel visualization-panel">
+                        <div class="canvas-container" id="unit-circle-container">
+                            <canvas id="unit-circle-canvas"></canvas>
+                            <div class="overlay-instruction">拖曳紅點改變角度</div>
+                        </div>
+                    </section>
+
+                    <!-- New Right Panel: Controls -->
+                    <section class="panel controls-panel">
+                        <div class="controls-group">
+                            <h3>顯示設定</h3>
+                            <label class="toggle-control">
+                                <input type="checkbox" id="show-sin" checked>
+                                <span class="toggle-track"></span>
+                                <span class="toggle-label color-sin">Sin (正弦)</span>
+                            </label>
+                            <label class="toggle-control">
+                                <input type="checkbox" id="show-cos" checked>
+                                <span class="toggle-track"></span>
+                                <span class="toggle-label color-cos">Cos (餘弦)</span>
+                            </label>
+                            <label class="toggle-control">
+                                <input type="checkbox" id="show-tan" checked>
+                                <span class="toggle-track"></span>
+                                <span class="toggle-label color-tan">Tan (正切)</span>
+                            </label>
+                            <hr>
+                            <label class="toggle-control">
+                                <input type="checkbox" id="snap-grid" checked>
+                                <span class="toggle-track"></span>
+                                <span class="toggle-label">吸附特殊角 (Special Angles)</span>
+                            </label>
+                        </div>
+                    </section>
+                </div>
+
+                <!-- Bottom: Function Graphs -->
+                <section class="panel graph-panel">
+                    <div class="canvas-container wide" id="wave-graph-container">
+                        <canvas id="wave-graph-canvas"></canvas>
+                    </div>
+                </section>
+            </div>
+
+            <!-- 公式面板 Formula Panel -->
+            <section class="panel formula-panel">
+                <div class="panel-header">
+                    <h2>常用三角函數公式</h2>
+                </div>
+                <div class="formula-grid">
+                    <!-- 六邊形記憶法 Hexagon Mnemonic -->
+                    <div class="formula-group hexagon-group">
+                        <h3>六邊形記憶法</h3>
+                        <svg class="hexagon-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                            <!-- 六邊形邊框 (Flat-topped) -->
+                            <polygon points="160,100 130,152 70,152 40,100 70,48 130,48" fill="none" stroke="#38bdf8"
+                                stroke-width="2" />
+
+                            <!-- 陰影三角形 (Pythagorean Triangles) -->
+                            <polygon points="70,48 130,48 100,100" fill="#38bdf8" opacity="0.2" />
+                            <polygon points="100,100 160,100 130,152" fill="#38bdf8" opacity="0.2" />
+                            <polygon points="40,100 100,100 70,152" fill="#38bdf8" opacity="0.2" />
+
+                            <!-- 對角線 (Reciprocal Relationships) -->
+                            <line x1="70" y1="48" x2="130" y2="152" stroke="#334155" stroke-width="1"
+                                stroke-dasharray="4" />
+                            <line x1="130" y1="48" x2="70" y2="152" stroke="#334155" stroke-width="1"
+                                stroke-dasharray="4" />
+                            <line x1="40" y1="100" x2="160" y2="100" stroke="#334155" stroke-width="1"
+                                stroke-dasharray="4" />
+
+                            <!-- 中心 "1" -->
+                            <circle cx="100" cy="100" r="12" fill="#1e293b" stroke="#334155" />
+                            <text x="100" y="105" text-anchor="middle" fill="#fbbf24" font-size="16"
+                                font-weight="bold">1</text>
+
+                            <!-- 頂點標籤 -->
+                            <text x="65" y="40" text-anchor="end" fill="#ef4444" font-size="14"
+                                font-weight="bold">sin</text>
+                            <text x="135" y="40" text-anchor="start" fill="#3b82f6" font-size="14"
+                                font-weight="bold">cos</text>
+                            <text x="35" y="105" text-anchor="end" fill="#10b981" font-size="14"
+                                font-weight="bold">tan</text>
+                            <text x="165" y="105" text-anchor="start" fill="#ec4899" font-size="14"
+                                font-weight="bold">cot</text>
+                            <text x="65" y="170" text-anchor="end" fill="#a855f7" font-size="14"
+                                font-weight="bold">sec</text>
+                            <text x="135" y="170" text-anchor="start" fill="#f97316" font-size="14"
+                                font-weight="bold">csc</text>
+                        </svg>
+                        <div class="hexagon-rules">
+                            <div class="rule">• 對角線倒數關係 (如 <span class="highlight-sin">sin</span>・<span
+                                    class="highlight-csc">csc</span> = 1)</div>
+                            <div class="rule">• 商數關係 (如 <span class="highlight-tan">tan</span> = <span
+                                    class="highlight-sin">sin</span>/<span class="highlight-cos">cos</span>)</div>
+                            <div class="rule">• 平方關係 (如 <span class="highlight-sin">sin</span>² + <span
+                                    class="highlight-cos">cos</span>² = 1)</div>
+                        </div>
+                    </div>
+
+                    <!-- 基本定義 -->
+                    <div class="formula-group">
+                        <h3>基本定義</h3>
+                        <div class="formula"><span class="highlight-sin">sin</span> <span
+                                class="highlight-angle">θ</span> = <span class="frac"><span class="num">對邊</span><span
+                                    class="den">斜邊</span></span></div>
+                        <div class="formula"><span class="highlight-cos">cos</span> <span
+                                class="highlight-angle">θ</span> = <span class="frac"><span class="num">鄰邊</span><span
+                                    class="den">斜邊</span></span></div>
+                        <div class="formula"><span class="highlight-tan">tan</span> <span
+                                class="highlight-angle">θ</span> = <span class="frac"><span class="num">對邊</span><span
+                                    class="den">鄰邊</span></span> = <span class="frac"><span class="num"><span
+                                        class="highlight-sin">sin</span>
+                                    <span class="highlight-angle">θ</span></span><span class="den"><span
+                                        class="highlight-cos">cos</span> <span
+                                        class="highlight-angle">θ</span></span></span></div>
+                    </div>
+
+                    <!-- 畢氏定理 -->
+                    <div class="formula-group">
+                        <h3>畢氏恆等式</h3>
+                        <div class="formula"><span class="highlight-sin">sin</span>²<span
+                                class="highlight-angle">θ</span> + <span class="highlight-cos">cos</span>²<span
+                                class="highlight-angle">θ</span> = 1</div>
+                        <div class="formula">1 + <span class="highlight-tan">tan</span>²<span
+                                class="highlight-angle">θ</span> = <span class="highlight-sec">sec</span>²<span
+                                class="highlight-angle">θ</span></div>
+                        <div class="formula">1 + <span class="highlight-cot">cot</span>²<span
+                                class="highlight-angle">θ</span> = <span class="highlight-csc">csc</span>²<span
+                                class="highlight-angle">θ</span></div>
+                    </div>
+
+                    <!-- 負角與餘角公式 (整合) -->
+                    <div class="formula-group">
+                        <h3>負角與餘角公式</h3>
+                        <!-- 負角 -->
+                        <div class="formula"><strong>負角：</strong></div>
+                        <div class="formula"><span class="highlight-sin">sin</span>(-<span
+                                class="highlight-angle">θ</span>) = -<span class="highlight-sin">sin</span> <span
+                                class="highlight-angle">θ</span></div>
+                        <div class="formula"><span class="highlight-cos">cos</span>(-<span
+                                class="highlight-angle">θ</span>) = <span class="highlight-cos">cos</span> <span
+                                class="highlight-angle">θ</span></div>
+                        <div class="formula"><span class="highlight-tan">tan</span>(-<span
+                                class="highlight-angle">θ</span>) = -<span class="highlight-tan">tan</span> <span
+                                class="highlight-angle">θ</span></div>
+                        <!-- 餘角 -->
+                        <div class="formula" style="margin-top: 8px;"><strong>餘角：</strong></div>
+                        <div class="formula"><span class="highlight-sin">sin</span>(90°-<span
+                                class="highlight-angle">θ</span>) = <span class="highlight-cos">cos</span> <span
+                                class="highlight-angle">θ</span></div>
+                        <div class="formula"><span class="highlight-cos">cos</span>(90°-<span
+                                class="highlight-angle">θ</span>) = <span class="highlight-sin">sin</span> <span
+                                class="highlight-angle">θ</span></div>
+                        <div class="formula"><span class="highlight-tan">tan</span>(90°-<span
+                                class="highlight-angle">θ</span>) = <span class="highlight-cot">cot</span> <span
+                                class="highlight-angle">θ</span></div>
+                    </div>
+
+                    <!-- 和角公式 -->
+                    <div class="formula-group">
+                        <h3>和角公式</h3>
+                        <div class="formula"><span class="highlight-sin">sin</span>(<span
+                                class="highlight-angle">α</span> ± <span class="highlight-angle">β</span>) = <span
+                                class="highlight-sin">sin</span> <span class="highlight-angle">α</span> <span
+                                class="highlight-cos">cos</span> <span class="highlight-angle">β</span> ± <span
+                                class="highlight-cos">cos</span> <span class="highlight-angle">α</span> <span
+                                class="highlight-sin">sin</span> <span class="highlight-angle">β</span></div>
+                        <div class="formula"><span class="highlight-cos">cos</span>(<span
+                                class="highlight-angle">α</span> ± <span class="highlight-angle">β</span>) = <span
+                                class="highlight-cos">cos</span> <span class="highlight-angle">α</span> <span
+                                class="highlight-cos">cos</span> <span class="highlight-angle">β</span> ∓ <span
+                                class="highlight-sin">sin</span> <span class="highlight-angle">α</span> <span
+                                class="highlight-sin">sin</span> <span class="highlight-angle">β</span></div>
+                        <div class="formula"><span class="highlight-tan">tan</span>(<span
+                                class="highlight-angle">α</span> ± <span class="highlight-angle">β</span>) = <span
+                                class="frac"><span class="num"><span class="highlight-tan">tan</span> <span
+                                        class="highlight-angle">α</span> ± <span class="highlight-tan">tan</span> <span
+                                        class="highlight-angle">β</span></span><span class="den">1 ∓ <span
+                                        class="highlight-tan">tan</span> <span class="highlight-angle">α</span> <span
+                                        class="highlight-tan">tan</span> <span
+                                        class="highlight-angle">β</span></span></span></div>
+                    </div>
+
+                    <!-- 倍角與三倍角公式 -->
+                    <div class="formula-group">
+                        <h3>倍角與三倍角公式</h3>
+                        <div class="formula"><strong>倍角：</strong></div>
+                        <div class="formula"><span class="highlight-sin">sin</span> 2<span
+                                class="highlight-angle">θ</span> = 2 <span class="highlight-sin">sin</span> <span
+                                class="highlight-angle">θ</span> <span class="highlight-cos">cos</span> <span
+                                class="highlight-angle">θ</span></div>
+                        <div class="formula"><span class="highlight-cos">cos</span> 2<span
+                                class="highlight-angle">θ</span> = <span class="highlight-cos">cos</span>²<span
+                                class="highlight-angle">θ</span> - <span class="highlight-sin">sin</span>²<span
+                                class="highlight-angle">θ</span></div>
+                        <div class="formula" style="padding-left: 54px;">= 2<span class="highlight-cos">cos</span>²<span
+                                class="highlight-angle">θ</span> - 1</div>
+                        <div class="formula" style="padding-left: 54px;">= 1 - 2<span
+                                class="highlight-sin">sin</span>²<span class="highlight-angle">θ</span></div>
+                        <div class="formula"><span class="highlight-tan">tan</span> 2<span
+                                class="highlight-angle">θ</span> = <span class="frac"><span class="num">2 <span
+                                        class="highlight-tan">tan</span> <span
+                                        class="highlight-angle">θ</span></span><span class="den">1 - <span
+                                        class="highlight-tan">tan</span>²<span
+                                        class="highlight-angle">θ</span></span></span></div>
+
+                        <div class="formula" style="margin-top: 8px;"><strong>三倍角：</strong></div>
+                        <div class="formula"><span class="highlight-sin">sin</span> 3<span
+                                class="highlight-angle">θ</span> = 3<span class="highlight-sin">sin</span> <span
+                                class="highlight-angle">θ</span> - 4<span class="highlight-sin">sin</span>³<span
+                                class="highlight-angle">θ</span></div>
+                        <div class="formula"><span class="highlight-cos">cos</span> 3<span
+                                class="highlight-angle">θ</span> = 4<span class="highlight-cos">cos</span>³<span
+                                class="highlight-angle">θ</span> - 3<span class="highlight-cos">cos</span> <span
+                                class="highlight-angle">θ</span></div>
+                    </div>
+
+                    <!-- 正弦與餘弦定理 -->
+                    <div class="formula-group">
+                        <h3>正弦與餘弦定理</h3>
+                        <div class="formula"><strong>正弦定理：</strong></div>
+                        <div class="formula"><span class="frac"><span class="num">a</span><span class="den"><span
+                                        class="highlight-sin">sin</span>
+                                    <span class="highlight-angle">A</span></span></span> = <span class="frac"><span
+                                    class="num">b</span><span class="den"><span class="highlight-sin">sin</span>
+                                    <span class="highlight-angle">B</span></span></span> = <span class="frac"><span
+                                    class="num">c</span><span class="den"><span class="highlight-sin">sin</span>
+                                    <span class="highlight-angle">C</span></span></span> = 2R</div>
+
+                        <div class="formula" style="margin-top: 8px;"><strong>餘弦定理：</strong></div>
+                        <div class="formula">c² = a² + b² - 2ab <span class="highlight-cos">cos</span> <span
+                                class="highlight-angle">C</span></div>
+                    </div>
+
+                    <!-- 面積公式 -->
+                    <div class="formula-group">
+                        <h3>面積公式</h3>
+                        <div class="formula">Area = <span class="frac"><span class="num">1</span><span
+                                    class="den">2</span></span>ab <span class="highlight-sin">sin</span> <span
+                                class="highlight-angle">C</span></div>
+                        <div class="formula">海龍公式 (Heron's Formula)：</div>
+                        <div class="formula">Area = √<span style="text-decoration: overline;">s(s-a)(s-b)(s-c)</span>
+                        </div>
+                        <div class="formula" style="font-size: 0.85em; color: var(--text-secondary);">其中 s = <span
+                                class="frac"><span class="num">a+b+c</span><span class="den">2</span></span></div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+    <!-- 返回入口網頁按鈕 -->
+    <a href="../index.html" class="back-to-home-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        回到首頁
+    </a>
+    <style>
+        .back-to-home-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #0f4c81;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-family: 'Noto Sans TC', sans-serif;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            z-index: 9999;
+        }
+
+        .back-to-home-btn:hover {
+            background-color: #2c7da0;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .back-to-home-btn svg {
+            width: 18px;
+            height: 18px;
+        }
+    </style>
+</body>
+
+</html>

@@ -1,0 +1,879 @@
+:root {
+    /* Macaron Category Colors */
+    --c-alkali-metal: #FFB2D1;
+    /* Strawberry Pink */
+    --c-alkaline-earth: #FFD1A4;
+    /* Cream Orange */
+    --c-transition-metal: #B2D8FF;
+    /* Sky Blue */
+    --c-lanthanide: #C4E17F;
+    /* Pistachio Green */
+    --c-actinide: #97EEDD;
+    /* Aqua */
+    --c-post-transition: #D1B2FF;
+    /* Lavender Purple */
+    --c-metalloid: #B2F2BB;
+    /* Mint Green */
+    --c-reactive-nonmetal: #FFF4B2;
+    /* Lemon Yellow */
+    --c-noble-gas: #E1BEE7;
+    /* Pale Purple */
+    --c-halogen: #FFAB91;
+    /* Coral Orange - 鹵素 */
+    --c-unknown: #F0F0F0;
+    /* Cloud Gray */
+
+    /* State Text Colors */
+    --s-solid: #2C3E50;
+    --s-liquid: #3498DB;
+    --s-gas: #E74C3C;
+    --s-unknown: #95A5A6;
+
+    /* Interface Colors - Macaron Polish */
+    --bg-main: #FFFCFA;
+    /* Warm Off-white */
+    --text-main: #4A4A4A;
+    /* Soft Dark Gray */
+    --border-color: #ECECEC;
+    /* Very Light Gray */
+
+    /* Layout */
+    --cell-size: 46px;
+    --gap: 3px;
+}
+
+body {
+    font-family: 'Noto Sans TC', 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* Prevent body scroll, use inner containers */
+}
+
+@media (max-width: 1024px) {
+    body {
+        height: auto;
+        /* Allow full page scroll on mobile */
+        overflow: auto;
+    }
+}
+
+header {
+    background: #fff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    z-index: 10;
+    flex-shrink: 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    /* Allow wrapping on small screens */
+    gap: 10px;
+}
+
+h1 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #2c3e50;
+    white-space: nowrap;
+}
+
+/* Controls */
+.controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Main Layout */
+main {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    /* Default horizontal layout */
+    padding: 10px;
+    gap: 15px;
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    /* Hide overflow by default for desktop layout */
+}
+
+/* Info Panel */
+.info-panel {
+    width: 210px;
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex-shrink: 0;
+    overflow-y: auto;
+    /* Scroll if content too long */
+}
+
+.element-large {
+    width: 140px;
+    margin: 0 auto;
+    border: 2px solid #333;
+    aspect-ratio: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    position: relative;
+    background: #eee;
+}
+
+.info-number {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.info-symbol {
+    font-size: 1.5rem;
+    /* Reduced from 4rem */
+    font-weight: bold;
+    text-align: center;
+    margin: auto 0;
+}
+
+.info-name {
+    font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 2px;
+}
+
+.info-zhuyin {
+    font-size: 1rem;
+    text-align: center;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.info-mass {
+    text-align: right;
+    font-size: 0.9rem;
+}
+
+.details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+}
+
+.detail-item .label {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.detail-item .value {
+    font-weight: 500;
+}
+
+/* Periodic Table Container */
+.periodic-table-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    overflow-y: auto;
+    width: 100%;
+    /* Ensure full width */
+    overflow-x: auto;
+    /* Allow horizontal scroll if needed */
+}
+
+/* Legend */
+.legend-bar {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 10px;
+    background: #fff;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.state-legend,
+.category-legend {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.legend-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border: 1px solid #eee;
+    padding: 4px 8px;
+    border-radius: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.group-label {
+    font-size: 0.7rem;
+    /* Reduced from 0.8rem */
+    color: #666;
+    margin-right: 5px;
+}
+
+.legend-btn {
+    border: 1px solid #ccc;
+    padding: 3px 10px;
+    /* Slight padding reduction */
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    /* Reduced from 0.9rem */
+    transition: all 0.2s;
+    background: #fff;
+    white-space: nowrap;
+    margin-bottom: 2px;
+}
+
+.legend-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Legend Colors */
+.cat-alkali-metal {
+    background: var(--c-alkali-metal);
+}
+
+.cat-alkaline-earth {
+    background: var(--c-alkaline-earth);
+}
+
+.cat-transition-metal {
+    background: var(--c-transition-metal);
+}
+
+.cat-lanthanide {
+    background: var(--c-lanthanide);
+}
+
+.cat-actinide {
+    background: var(--c-actinide);
+}
+
+.cat-post-transition {
+    background: var(--c-post-transition);
+}
+
+.cat-metalloid {
+    background: var(--c-metalloid);
+}
+
+.cat-reactive-nonmetal {
+    background: var(--c-reactive-nonmetal);
+}
+
+.cat-noble-gas {
+    background: var(--c-noble-gas);
+}
+
+.cat-halogen {
+    background: var(--c-halogen);
+}
+
+.state-solid {
+    color: var(--s-solid);
+    font-weight: bold;
+}
+
+.state-liquid {
+    color: var(--s-liquid);
+    font-weight: bold;
+}
+
+.state-gas {
+    color: var(--s-gas);
+    font-weight: bold;
+}
+
+.state-unknown {
+    color: var(--s-unknown);
+    font-weight: bold;
+}
+
+/* Grid System */
+.periodic-table {
+    display: grid;
+    grid-template-columns: 24px repeat(18, var(--cell-size));
+    grid-template-rows: 20px 20px 20px repeat(7, var(--cell-size));
+    gap: var(--gap);
+    margin-bottom: 20px;
+    padding: 10px;
+    /* Add padding to prevent clipping of shadows */
+}
+
+/* Header Labels */
+.header-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 10px;
+    color: #666;
+    user-select: none;
+    cursor: pointer;
+    /* Interactive */
+    transition: background-color 0.2s;
+}
+
+.header-row-1 {
+    grid-row: 1;
+    font-weight: bold;
+    font-size: 11px;
+    color: #333;
+}
+
+.header-row-2 {
+    grid-row: 2;
+    font-size: 10px;
+}
+
+.header-row-3 {
+    grid-row: 3;
+    font-size: 9px;
+}
+
+.period-cell {
+    grid-column: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #333;
+    font-size: 11px;
+    user-select: none;
+    cursor: pointer;
+    /* Interactive */
+    transition: background-color 0.2s;
+}
+
+.period-cell:hover,
+.header-cell:hover {
+    background-color: #e0e0e0;
+    border-radius: 4px;
+}
+
+/* Mnemonic Box - 口訣框 */
+/* 預設隱藏框線，只在 active 狀態時顯示 */
+.mnemonic-container {
+    grid-column: 4 / span 10;
+    grid-row: 5 / span 2;
+    border: 2px solid transparent;
+    /* 預設無框線 */
+    border-radius: 8px;
+    background: transparent;
+    /* 預設透明背景 */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    box-shadow: none;
+    /* 預設無陰影 */
+    z-index: 5;
+    transition: all 0.2s ease;
+    /* 平滑過渡效果 */
+}
+
+/* 當有口訣內容時顯示框線 */
+.mnemonic-container.active {
+    border-color: #888;
+    background: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mnemonic-title {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    color: #555;
+    background: #f8f9fa;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+}
+
+.mnemonic-content {
+    font-size: 1.2rem;
+    color: #0056b3;
+    font-weight: bold;
+    text-align: center;
+    min-height: 1.5em;
+    /* Prevent layout shift */
+}
+
+.element {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2px;
+    cursor: pointer;
+    position: relative;
+    user-select: none;
+    transition: transform 0.1s, opacity 0.2s;
+    font-size: 10px;
+    color: var(--s-solid);
+    /* Default color */
+    background-color: #fff;
+    /* Default background if not categorized */
+}
+
+.element:hover {
+    transform: scale(1.1);
+    z-index: 100;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+    border-color: #000;
+}
+
+.element.dimmed,
+.element-large.dimmed,
+.mnemonic-container.dimmed,
+.placeholder-57-71.dimmed,
+.placeholder-89-103.dimmed {
+    opacity: 0.2;
+}
+
+.element.highlighted,
+.placeholder-57-71.highlighted,
+.placeholder-89-103.highlighted {
+    opacity: 1;
+    transform: scale(1.05);
+    z-index: 50;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.element-num {
+    font-size: 8px;
+    line-height: 1;
+}
+
+.element-symbol {
+    font-size: 12px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.element-name {
+    font-size: 12px;
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* F-block rows setup */
+.lanthanoids-actinoids {
+    display: grid;
+    grid-template-columns: 40px repeat(15, var(--cell-size));
+    /* Label + 15 elements */
+    gap: var(--gap);
+    margin-top: 10px;
+    justify-content: center;
+}
+
+/* Fix for F-block elements positioning - reset inherited grid placement */
+.lanthanoids-actinoids .element {
+    grid-column: auto !important;
+    grid-row: auto !important;
+}
+
+.f-block-row {
+    display: contents;
+    /* Allows children to participate in the parent grid */
+}
+
+.row-label {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Category Backgrounds applied to elements */
+.group-1 {
+    grid-column: 2;
+}
+
+.group-2 {
+    grid-column: 3;
+}
+
+.group-3 {
+    grid-column: 4;
+}
+
+.group-4 {
+    grid-column: 5;
+}
+
+.group-5 {
+    grid-column: 6;
+}
+
+.group-6 {
+    grid-column: 7;
+}
+
+.group-7 {
+    grid-column: 8;
+}
+
+.group-8 {
+    grid-column: 9;
+}
+
+.group-9 {
+    grid-column: 10;
+}
+
+.group-10 {
+    grid-column: 11;
+}
+
+.group-11 {
+    grid-column: 12;
+}
+
+.group-12 {
+    grid-column: 13;
+}
+
+.group-13 {
+    grid-column: 14;
+}
+
+.group-14 {
+    grid-column: 15;
+}
+
+.group-15 {
+    grid-column: 16;
+}
+
+.group-16 {
+    grid-column: 17;
+}
+
+.group-17 {
+    grid-column: 18;
+}
+
+.group-18 {
+    grid-column: 19;
+}
+
+/* Periods */
+.period-1 {
+    grid-row: 4;
+}
+
+.period-2 {
+    grid-row: 5;
+}
+
+.period-3 {
+    grid-row: 6;
+}
+
+.period-4 {
+    grid-row: 7;
+}
+
+.period-5 {
+    grid-row: 8;
+}
+
+.period-6 {
+    grid-row: 9;
+}
+
+.period-7 {
+    grid-row: 10;
+}
+
+/* Specific category styles for elements */
+.element.alkali-metal,
+.element-large.alkali-metal {
+    background: var(--c-alkali-metal);
+}
+
+.element.alkaline-earth,
+.element-large.alkaline-earth {
+    background: var(--c-alkaline-earth);
+}
+
+.element.transition-metal,
+.element-large.transition-metal {
+    background: var(--c-transition-metal);
+}
+
+.element.lanthanide,
+.element-large.lanthanide {
+    background: var(--c-lanthanide);
+}
+
+.element.actinide,
+.element-large.actinide {
+    background: var(--c-actinide);
+}
+
+.element.post-transition,
+.element-large.post-transition {
+    background: var(--c-post-transition);
+}
+
+.element.metalloid,
+.element-large.metalloid {
+    background: var(--c-metalloid);
+}
+
+.element.reactive-nonmetal,
+.element-large.reactive-nonmetal {
+    background: var(--c-reactive-nonmetal);
+}
+
+.element.noble-gas,
+.element-large.noble-gas {
+    background: var(--c-noble-gas);
+}
+
+.element.halogen,
+.element-large.halogen {
+    background: var(--c-halogen);
+}
+
+.element.unknown,
+.element-large.unknown {
+    background: var(--c-unknown);
+}
+
+/* Lanthanide/Actinide placeholders in main grid */
+.placeholder-57-71 {
+    grid-column: 4;
+    grid-row: 9;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    /* Allow multi-line */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px dashed #999;
+    line-height: 1.2;
+    background: var(--c-lanthanide);
+    /* 鑭系背景色 */
+}
+
+.placeholder-89-103 {
+    grid-column: 4;
+    grid-row: 10;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    /* Allow multi-line */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 1px dashed #999;
+    line-height: 1.2;
+    background: var(--c-actinide);
+    /* 錒系背景色 */
+}
+
+
+/* =========================================
+   Responsive WEB Design (RWD) Media Queries
+   ========================================= */
+
+/* Tablet & Smaller Desktop (< 1200px) */
+@media (max-width: 1200px) {
+    main {
+        flex-direction: column;
+        align-items: center;
+        padding: 10px;
+        height: auto;
+        overflow: visible;
+        /* Let it scroll */
+    }
+
+    .info-panel {
+        width: 100%;
+        max-width: 800px;
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 15px;
+        order: -1;
+        /* Show Info Panel at the top */
+    }
+
+    .element-large {
+        width: 140px;
+        margin: 0 auto;
+        width: 120px;
+        height: 120px;
+        flex-shrink: 0;
+    }
+
+    .details-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        flex: 1;
+        gap: 8px;
+    }
+
+    .periodic-table-container {
+        align-items: flex-start;
+        /* Align left to make scrolling natural */
+        padding-bottom: 20px;
+    }
+
+    .periodic-table {
+        margin: 0 auto;
+    }
+}
+
+/* Mobile Devices (< 768px) */
+@media (max-width: 768px) {
+    :root {
+        --cell-size: 40px;
+        --gap: 2px;
+    }
+
+    .header-content {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    h1 {
+        text-align: center;
+        font-size: 1.3rem;
+    }
+
+    .controls {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .temp-control {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+
+    .temp-control input[type="range"] {
+        flex: 1;
+        min-width: 150px;
+    }
+
+    .info-panel {
+        padding: 15px 10px;
+    }
+
+    .element-large {
+        width: 140px;
+        margin: 0 auto;
+        width: 100px;
+        height: 100px;
+    }
+
+    .element-symbol {
+        font-size: 14px;
+    }
+
+    .element-num,
+    .element-name {
+        font-size: 8px;
+    }
+
+    /* Reduce Legend Button Size */
+    .legend-btn {
+        padding: 3px 8px;
+        font-size: 0.8rem;
+    }
+
+    .group-label {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 3px;
+    }
+}
+
+/* Very Small Screens (< 480px) */
+@media (max-width: 480px) {
+    :root {
+        --cell-size: 34px;
+    }
+
+    .element-symbol {
+        font-size: 12px;
+    }
+
+    .element-num {
+        display: none;
+    }
+
+    /* Hide Atomic Number on tiny screens */
+    .element-name {
+        display: none;
+    }
+
+    /* Hide Name on tiny screens */
+
+    .element {
+        justify-content: center;
+        align-items: center;
+    }
+
+    .info-large .element-symbol {
+        font-size: 2.5rem;
+    }
+}
+
+/* Oxidation States Highlighting */
+#info-oxidation b {
+    color: #4da6ff;
+    /* Light Blue for common oxidation states */
+}
