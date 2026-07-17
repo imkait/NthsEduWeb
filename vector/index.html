@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="zh-Hant-TW">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>基礎向量互動教學</title>
+  <!-- Tailwind CDN for quick, clean educational styling -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 text-slate-900 antialiased">
+  <div class="max-w-6xl mx-auto p-4">
+    <header class="mb-4">
+      <h1 class="text-2xl font-semibold">基礎向量互動教學</h1>
+      <p class="text-sm text-slate-600">透過拖曳與視覺化理解向量的幾何意義與運算</p>
+    </header>
+
+    <!-- Tabs -->
+    <nav class="tabs flex gap-2 mb-4">
+      <button class="tab px-4 py-2 rounded-md bg-white shadow-sm active" data-unit="1">單元一：向量與成分</button>
+      <button class="tab px-4 py-2 rounded-md bg-white shadow-sm" data-unit="2">單元二：加減法</button>
+      <button class="tab px-4 py-2 rounded-md bg-white shadow-sm" data-unit="3">單元三：內積</button>
+    </nav>
+
+    <main class="grid lg:grid-cols-3 gap-4">
+      <!-- Left: Controls / Panel -->
+      <aside id="panel" class="col-span-1 bg-white p-4 rounded-lg shadow-sm">
+        <section id="unit-title" class="mb-3">
+          <h2 class="text-lg font-medium">單元一：認識向量與成分</h2>
+          <p class="text-sm text-slate-600 mt-1">拖曳箭頭終點即可改變向量。</p>
+        </section>
+
+        <section id="unit-controls" class="space-y-3">
+          <!-- Unit-specific controls inserted by JS -->
+        </section>
+
+        <section class="mt-4 bg-slate-50 p-3 rounded">
+          <div id="values" class="text-lg font-mono">
+            <!-- live values -->
+          </div>
+        </section>
+      </aside>
+
+      <!-- Right: Canvas interactive area (spans two columns on large screens) -->
+      <div class="col-span-2 bg-white rounded-lg shadow-sm p-2">
+        <div class="canvas-wrap relative">
+          <canvas id="gridCanvas" class="w-full h-[520px] rounded"></canvas>
+          <div id="helpOverlay" class="absolute top-2 left-2 text-xs text-slate-600 bg-white/70 px-2 py-1 rounded">拖曳箭頭端點即可互動（支援滑鼠與觸控）</div>
+        </div>
+      </div>
+    </main>
+
+    <footer class="mt-6 text-xs text-slate-500">適合高中職學生。開源並可部署於 GitHub Pages。</footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
