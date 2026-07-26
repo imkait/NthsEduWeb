@@ -30,6 +30,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 header {
@@ -154,7 +155,9 @@ input[type="text"]:focus {
 .layer-item {
     padding: 8px 12px;
     background: #f1f3f5;
+    border: 0;
     border-radius: 6px;
+    font: inherit;
     font-size: 0.85rem;
     color: #868e96;
     transition: all 0.3s ease;
@@ -162,6 +165,7 @@ input[type="text"]:focus {
     white-space: nowrap;
     cursor: pointer;
     user-select: none;
+    width: 100%;
 }
 
 .layer-item:hover {
@@ -182,6 +186,15 @@ input[type="text"]:focus {
     transform: scale(1.08);
 }
 
+.layer-item:focus-visible,
+.btn:focus-visible,
+input[type="text"]:focus-visible,
+input[type="range"]:focus-visible,
+.back-to-home-btn:focus-visible {
+    outline: 3px solid rgba(67, 97, 238, 0.45);
+    outline-offset: 2px;
+}
+
 .sender-layers {
     order: 1;
 }
@@ -192,13 +205,14 @@ input[type="text"]:focus {
 
 .network-path {
     order: 3;
-    flex: 1;
+    flex: 0 0 100px;
+    width: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    margin: 0 1rem;
-    min-width: 200px;
+    margin: 0 0.5rem;
+    min-width: 100px;
 }
 
 .device.receiver {
@@ -213,7 +227,7 @@ input[type="text"]:focus {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 220px;
+    width: 430px;
     z-index: 10;
 }
 
@@ -229,7 +243,7 @@ input[type="text"]:focus {
 }
 
 .stack-container {
-    width: 200px;
+    width: 410px;
     min-height: 280px;
     display: flex;
     flex-direction: column-reverse;
@@ -333,25 +347,35 @@ input[type="text"]:focus {
 
 .layer-header-block {
     display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
     border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
-    padding-bottom: 5px;
-    margin-bottom: 5px;
+    padding-bottom: 3px;
+    margin-bottom: 4px;
+    min-width: 0;
 }
 
 .header-title {
     font-weight: 800;
     font-size: 0.85rem;
     opacity: 0.9;
+    flex: 0 0 auto;
+    white-space: nowrap;
 }
 
 .header-details {
     font-family: 'Courier New', monospace;
-    font-size: 0.7rem;
-    text-align: right;
-    line-height: 1.2;
+    font-size: 0.65rem;
+    text-align: left;
+    line-height: 1.1;
     opacity: 0.8;
+    flex: 1 1 auto;
+    min-width: 0;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: clip;
 }
 
 .message-content {
@@ -439,4 +463,94 @@ footer {
     background: #e9ecef;
     color: #868e96;
     font-size: 0.9rem;
+}
+
+@media (max-width: 1100px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .stage {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+        min-height: auto;
+    }
+
+    .layer-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        min-width: 0;
+    }
+
+    .device {
+        width: 100%;
+        max-width: 340px;
+        margin: 0 auto;
+    }
+
+    .network-path {
+        width: 100%;
+        min-width: 0;
+        margin: 0;
+        min-height: 160px;
+    }
+
+    .stack-container {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .connection-line {
+        flex: 1 1 60px;
+    }
+}
+
+@media (max-width: 640px) {
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    .controls {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .input-group,
+    .speed-control {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    input[type="text"] {
+        width: min(100%, 16rem);
+    }
+
+    .button-group {
+        display: flex;
+        width: 100%;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn {
+        flex: 1 1 8rem;
+    }
+
+    .device-icon {
+        font-size: 2.75rem;
+    }
+
+    .layer-item {
+        font-size: 0.8rem;
+        width: auto;
+    }
+
+    .back-to-home-btn {
+        right: 12px;
+        bottom: 12px;
+        padding: 8px 14px;
+    }
 }

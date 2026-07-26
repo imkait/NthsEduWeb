@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let shouldReset = false;  // 用於中斷動畫
     let animationSpeed = 1000;
     let pauseResolve = null;  // 暫停時的 Promise resolver
+    let activeAnimationToken = 0;
 
     // Config
     const texts = {
@@ -115,15 +116,77 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // 接收端各層詳細說明 (解封裝視角)
+    const receiverLayerDescriptions = {
+        7: {
+            name: "應用層 (Application Layer)",
+            desc: "OSI 第七層，接收端從這裡取出最終資料，交給應用程式處理。常見協定：HTTP、FTP、SMTP、DNS 等。",
+            example: "例如：伺服器回應 HTTP 200 OK、郵件軟體接收 SMTP 郵件、DNS 回應查詢結果。",
+            analogy: "📦 收包裹比喻：打開包裹，取出朋友送的禮物！終於看到內容物了，這就是「接收成品」的階段。就像你收到網購的商品一樣！",
+            color: "#ffadad"
+        },
+        6: {
+            name: "表現層 (Presentation Layer)",
+            desc: "OSI 第六層，接收端負責將收到的資料解密、解壓縮、還原為可讀格式。",
+            example: "例如：SSL/TLS 解密資料流、JPEG 解壓縮影像、UTF-8 編碼還原。",
+            analogy: "📦 收包裹比喻：拆開氣泡紙（解壓縮）、打開鎖頭（解密），把包裝好的禮物還原成原本的樣子！",
+            color: "#fffb7d"
+        },
+        5: {
+            name: "會議層 (Session Layer)",
+            desc: "OSI 第五層，接收端管理與發送端之間的連線狀態，確保對話完整後才關閉。",
+            example: "例如：確認登入狀態有效、維持遠端桌面連線、處理断線重連。",
+            analogy: "📦 收包裹比喻：接到物流公司的電話確認「您的包裹已送達」，確認雙方的對話順利完成！",
+            color: "#a0c4ff"
+        },
+        4: {
+            name: "傳輸層 (Transport Layer)",
+            desc: "OSI 第四層，接收端依 Port 號將資料分送給正確的應用程式，並重組多個封包為完整資料。",
+            example: "例如：TCP 確認封包正確到達、重新排序亂序封包、回傳 ACK 訊號。",
+            analogy: "📦 收包裹比喻：收到好幾箱包裹，根據箱子上的「收件人手機號碼」（Port）找到對應的你，再把「第1箱、第2箱」按順序排好！",
+            color: "#ffd6a5"
+        },
+        3: {
+            name: "網路層 (Network Layer)",
+            desc: "OSI 第三層，接收端驗證目標 IP 位址是否為自己，然後移除 IP 標頭繼續上傳。",
+            example: "例如：確認封包目的地是自己的 IP、TTL 過期則丟棄、ICMP 回應。",
+            analogy: "📦 收包裹比喻：物流站收到包裹，檢查「收件地址」是不是自己的門牌。確認無誤後拆掉地址標籤，交給下一層！",
+            color: "#fdffb6"
+        },
+        2: {
+            name: "資料連結層 (Data Link Layer)",
+            desc: "OSI 第二層，接收端檢查 MAC 位址是否匹配，執行錯誤偵測後移除訊框標頭。",
+            example: "例如：比對目的地 MAC 位址、CRC 錯誤檢查、移除 Ethernet 訊框標頭。",
+            analogy: "📦 收包裹比喻：配送員送到你家，確認「門牌號碼」（MAC位址）正確後，拆掉外層包裝，把包裹交給你！",
+            color: "#caffbf"
+        },
+        1: {
+            name: "實體層 (Physical Layer)",
+            desc: "OSI 第一層，接收端透過實體介質接收電子訊號，將其還原為數位資料位元流。",
+            example: "例如：網路卡接收電子脈衝、光纖收發器轉換光訊號、Wi-Fi 天線接收無線訊號。",
+            analogy: "📦 收包裹比喻：貨車到站卸貨，把高速公路上運送的包裹從車上搬下來（訊號→資料），準備拆封！",
+            color: "#bdb2ff"
+        }
+    };
+
     // Mock Header Data
     const headerData = {
-        mac: "Src: 00:1A:2B:3C:4D:5E<br>Dst: FF:FF:FF:FF:FF:FF",
-        ip: "Src: 192.168.1.10<br>Dst: 104.21.25.10",
-        tcp: "Src Port: 49152<br>Dst Port: 443",
+        mac: "Src: 00:1A:2B:3C:4D:5E ｜ Dst: FF:FF:FF:FF:FF:FF",
+        ip: "Src: 192.168.1.10 ｜ Dst: 104.21.25.10",
+        tcp: "Src Port: 49152 ｜ Dst Port: 443",
         sess: "SessionID: 0x8F3A2C1B",
         pres: "Format: ASCII",
         app: "Content-Type: text/plain"
     };
+
+    function escapeHtml(text) {
+        return text
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+    }
 
     // Events
     const pauseBtn = document.getElementById('pauseBtn');
@@ -167,8 +230,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 const layerNum = parseInt(id.replace(/[^0-9]/g, ''), 10);
                 const side = id.startsWith('s-') ? '發送端' : '接收端';
 
-                if (layerDescriptions[layerNum]) {
-                    const info = layerDescriptions[layerNum];
+                const descriptions = id.startsWith('r-') ? receiverLayerDescriptions : layerDescriptions;
+                if (descriptions[layerNum]) {
+                    const info = descriptions[layerNum];
                     // 清除所有 active 狀態，標記當前點擊的項目
                     clearActiveSteps();
                     item.classList.add('active');
@@ -198,33 +262,24 @@ document.addEventListener('DOMContentLoaded', () => {
     setupLayerClickEvents();
 
     // 可被暫停和中斷的 sleep 函式
-    function sleep(ms) {
-        return new Promise(resolve => {
-            if (shouldReset) {
-                resolve();
-                return;
-            }
+    async function sleep(ms, runToken) {
+        if (shouldReset || runToken !== activeAnimationToken) {
+            return false;
+        }
 
-            const checkPause = () => {
-                if (shouldReset) {
-                    resolve();
-                    return;
-                }
-                if (isPaused) {
-                    // 等待繼續
-                    new Promise(r => { pauseResolve = r; }).then(() => {
-                        if (shouldReset) {
-                            resolve();
-                        } else {
-                            setTimeout(resolve, ms);
-                        }
-                    });
-                } else {
-                    setTimeout(resolve, ms);
-                }
-            };
-            checkPause();
-        });
+        while (isPaused && !shouldReset && runToken === activeAnimationToken) {
+            await new Promise(resolve => {
+                pauseResolve = resolve;
+            });
+            pauseResolve = null;
+        }
+
+        if (shouldReset || runToken !== activeAnimationToken) {
+            return false;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, ms));
+        return !(shouldReset || runToken !== activeAnimationToken);
     }
 
     // Helper to create layer visual
@@ -248,6 +303,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function startAnimation() {
         if (isAnimating) return;
+        const runToken = ++activeAnimationToken;
         isAnimating = true;
         isPaused = false;
         shouldReset = false;
@@ -266,14 +322,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Step 7: App Layer
         setSenderStep(7);
         explanationText.textContent = texts.encapsulation.app;
-        const appLayer = createLayer('app', `<div class="message-content">${message}</div>`, 'APP', headerData.app);
+        const appLayer = createLayer('app', `<div class="message-content">${escapeHtml(message)}</div>`, 'APP', headerData.app);
         senderStack.appendChild(appLayer);
         appLayer.style.opacity = '0';
         appLayer.style.transform = 'translateY(-20px)';
-        await sleep(50);
+        if (!(await sleep(50, runToken))) return;
         appLayer.style.opacity = '1';
         appLayer.style.transform = 'translateY(0)';
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         // Step 6: Presentation Layer
         setSenderStep(6);
@@ -281,7 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const presLayer = createLayer('pres', '', 'PRES', headerData.pres);
         presLayer.querySelector('.layer-content-wrapper').appendChild(appLayer);
         senderStack.appendChild(presLayer);
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         // Step 5: Session Layer
         setSenderStep(5);
@@ -289,7 +345,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sessLayer = createLayer('sess', '', 'SESS', headerData.sess);
         sessLayer.querySelector('.layer-content-wrapper').appendChild(presLayer);
         senderStack.appendChild(sessLayer);
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         // Step 4: Transport Layer
         setSenderStep(4);
@@ -297,7 +353,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const tcpLayer = createLayer('tcp', '', 'TCP', headerData.tcp);
         tcpLayer.querySelector('.layer-content-wrapper').appendChild(sessLayer);
         senderStack.appendChild(tcpLayer);
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         // Step 3: Network Layer
         setSenderStep(3);
@@ -305,7 +361,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const ipLayer = createLayer('ip', '', 'IP', headerData.ip);
         ipLayer.querySelector('.layer-content-wrapper').appendChild(tcpLayer);
         senderStack.appendChild(ipLayer);
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         // Step 2: Data Link Layer
         setSenderStep(2);
@@ -313,12 +369,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const macLayer = createLayer('mac', '', 'MAC', headerData.mac);
         macLayer.querySelector('.layer-content-wrapper').appendChild(ipLayer);
         senderStack.appendChild(macLayer);
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         // Step 1: Physical Layer
         setSenderStep(1);
         explanationText.textContent = texts.encapsulation.phy;
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
 
         // --- 2. Transmission ---
@@ -334,15 +390,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         flyingPacket.style.left = '50%';
 
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         router.classList.add('active');
-        await sleep(500);
+        if (!(await sleep(500, runToken))) return;
         router.classList.remove('active');
 
         flyingPacket.style.left = '80%';
 
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         flyingPacket.classList.add('hidden');
         flyingPacket.style.left = '20%';
@@ -355,7 +411,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Rebuild Stack
         receiverStack.innerHTML = '';
-        const r_app = createLayer('app', `<div class="message-content">${message}</div>`, 'APP', headerData.app);
+        const r_app = createLayer('app', `<div class="message-content">${escapeHtml(message)}</div>`, 'APP', headerData.app);
 
         const r_pres = createLayer('pres', '', 'PRES', headerData.pres);
         r_pres.querySelector('.layer-content-wrapper').appendChild(r_app);
@@ -374,42 +430,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
         receiverStack.appendChild(r_mac);
 
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         // Step 2: Remove Link
         setReceiverStep(2);
         explanationText.textContent = texts.decapsulation.link;
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
         r_mac.replaceWith(r_ip);
 
         // Step 3: Remove Network
         setReceiverStep(3);
         explanationText.textContent = texts.decapsulation.net;
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
         r_ip.replaceWith(r_tcp);
 
         // Step 4: Remove Transport
         setReceiverStep(4);
         explanationText.textContent = texts.decapsulation.trans;
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
         r_tcp.replaceWith(r_sess);
 
         // Step 5: Remove Session
         setReceiverStep(5);
         explanationText.textContent = texts.decapsulation.sess;
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
         r_sess.replaceWith(r_pres);
 
         // Step 6: Remove Presentation
         setReceiverStep(6);
         explanationText.textContent = texts.decapsulation.pres;
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
         r_pres.replaceWith(r_app);
 
         // Step 7: Done
         setReceiverStep(7);
         explanationText.textContent = texts.decapsulation.app;
-        await sleep(animationSpeed);
+        if (!(await sleep(animationSpeed, runToken))) return;
 
         finalMessage.textContent = `收到訊息：${message}`;
         finalMessage.classList.remove('hidden');
@@ -426,6 +482,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetAnimation() {
         // 設定中斷標記
         shouldReset = true;
+        activeAnimationToken += 1;
 
         // 如果正在暫停中，解除暫停讓動畫可以結束
         if (isPaused && pauseResolve) {
@@ -442,9 +499,6 @@ document.addEventListener('DOMContentLoaded', () => {
         pauseBtn.textContent = '暫停';
         messageInput.disabled = false;
         explanationText.textContent = texts.idle;
-
-        // 重置中斷標記
-        setTimeout(() => { shouldReset = false; }, 100);
     }
 
     function resetVisuals() {
