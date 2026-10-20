@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="style.css">
   <script src="script.js" defer></script>
   <script src="convex-graph.js" defer></script>
+  <script src="mirror-graph.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#lab">跳至互動實驗</a>
@@ -33,7 +34,7 @@
             <option value="convex-mirror">凸面鏡 · 發散反射</option>
           </select>
           <div class="range-heading"><label class="field-label" for="distance-range">物距 u</label><output id="distance-output" for="distance-range">250</output></div>
-          <input id="distance-range" type="range" min="45" max="320" value="250" step="1" aria-describedby="distance-help">
+          <input id="distance-range" type="range" min="40" max="400" value="250" step="1" aria-describedby="distance-help">
           <div class="range-marks"><span>靠近元件</span><span>遠離元件</span></div>
           <p class="field-hint" id="distance-help">圖示使用相對距離單位；焦距固定為 100。</p>
           <div class="preset-block"><p class="field-label">快速觀察</p><div class="preset-buttons"><button type="button" data-distance="200">2F 位置</button><button type="button" data-distance="100">焦點 F</button><button type="button" data-distance="65">焦點內</button></div></div>
@@ -53,12 +54,12 @@
         <p class="result-note" id="result-note">折射光在透鏡另一側實際交會，可用屏幕承接。</p>
       </div>
     </section>
-    <section class="convex-graph-section" id="convex-graph-section" aria-labelledby="convex-graph-title">
+    <section class="imaging-graph-section" id="convex-graph-section" aria-labelledby="convex-graph-title">
       <div class="section-intro">
         <div><p class="section-kicker">02 / CONVEX LENS</p><h2 id="convex-graph-title">凸透鏡成像座標圖</h2></div>
         <p>讓物距與像距的輔助線繞著 (f, f) 旋轉，從兩軸截距看懂成像如何隨物體移動。</p>
       </div>
-      <div class="convex-graph-layout">
+      <div class="imaging-graph-layout">
         <div class="graph-board">
           <div class="graph-board-heading"><strong>物距 × 像距</strong><span id="graph-drag-status">拖曳黃色虛線或紅色圓點</span></div>
           <div class="graph-scroll">
@@ -83,12 +84,51 @@
             <div class="graph-range-heading"><label for="graph-distance">調整物距</label><output id="graph-range-value" for="graph-distance">2.50 f</output></div>
             <input id="graph-distance" type="range" min="0.4" max="4" step="0.01" value="2.5" aria-describedby="graph-distance-help">
             <div class="graph-range-ends"><span>焦點內 0.4f</span><span>4f</span></div>
-            <p id="graph-distance-help">這張座標圖可獨立調整；數值以焦距 f 為單位。</p>
+            <p id="graph-distance-help">數值以焦距 f 為單位，並與上方藍色物體位置同步。</p>
             <div class="graph-presets" aria-label="快速觀察位置">
               <button type="button" data-graph-u="4">2f 外</button><button type="button" data-graph-u="2">恰在 2f</button><button type="button" data-graph-u="1.5">f～2f</button><button type="button" data-graph-u="1">恰在 f</button><button type="button" data-graph-u="0.65">f 內</button><button type="button" data-graph-u="0.4">更靠近透鏡</button>
             </div>
           </div>
           <p class="graph-note"><strong>讀圖：</strong>橫軸左側是虛像區，右側是實像區。物體接近焦點時，像距會快速增大；恰在焦點時，像位於無限遠。</p>
+        </aside>
+      </div>
+    </section>
+    <section class="imaging-graph-section" id="mirror-graph-section" aria-labelledby="mirror-graph-title" hidden>
+      <div class="section-intro">
+        <div><p class="section-kicker">02 / CONCAVE MIRROR</p><h2 id="mirror-graph-title">凹面鏡成像座標圖</h2></div>
+        <p>以曲率中心 C = 2f 為參考，轉動通過 (f, f) 的輔助線，觀察鏡前實像與鏡後虛像。</p>
+      </div>
+      <div class="imaging-graph-layout">
+        <div class="graph-board">
+          <div class="graph-board-heading"><strong>物距 × 像距</strong><span id="mirror-drag-status">拖曳黃色虛線或紅色圓點</span></div>
+          <div class="graph-scroll">
+            <svg id="mirror-plot" viewBox="0 0 970 500" role="img" aria-label="凹面鏡物距與像距座標圖。橫軸為像距，縱軸為物距。2f 是曲率中心 C；可拖曳輔助線或紅色圓點，也可用右側滑桿操作。">
+              <defs>
+                <marker id="mirror-axis-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7594a0"></path></marker>
+                <marker id="mirror-object-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ff8f9d"></path></marker>
+                <marker id="mirror-image-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7ce4c4"></path></marker>
+                <clipPath id="mirror-clip"><rect x="42" y="24" width="888" height="420"></rect></clipPath>
+              </defs>
+              <g id="mirror-static"></g><g id="mirror-dynamic"></g>
+            </svg>
+          </div>
+          <div class="graph-board-footer"><span>直線固定通過 (f, f)；兩軸截距是物距 u、像距 v，而 2f = C。</span><div class="graph-legend"><span><i class="graph-object-key"></i>物距</span><span><i class="graph-image-key"></i>像距</span><span><i class="graph-guide-key"></i>輔助線</span></div></div>
+        </div>
+        <aside class="graph-side" aria-label="凹面鏡座標圖控制">
+          <div class="graph-case-card" aria-live="polite" aria-atomic="true">
+            <p id="mirror-case-tag">U &gt; C</p><h3 id="mirror-case-title">物在 C 外</h3><p id="mirror-case-description">在鏡前成倒立、縮小的實像，像落在 f 與 C 之間。</p>
+            <div class="graph-stats"><div><span>物距 u</span><strong id="mirror-u-value">2.50 f</strong></div><div><span>像距 v</span><strong id="mirror-v-value">1.67 f</strong></div></div>
+          </div>
+          <div class="graph-controls">
+            <div class="graph-range-heading"><label for="mirror-distance">調整物距</label><output id="mirror-range-value" for="mirror-distance">2.50 f</output></div>
+            <input id="mirror-distance" type="range" min="0.4" max="4" step="0.01" value="2.5" aria-describedby="mirror-distance-help">
+            <div class="graph-range-ends"><span>焦點內 0.4f</span><span>4f</span></div>
+            <p id="mirror-distance-help">數值以焦距 f 為單位，並與上方藍色物體位置同步。</p>
+            <div class="graph-presets" aria-label="快速觀察位置">
+              <button type="button" data-mirror-u="4">C 外</button><button type="button" data-mirror-u="2">恰在 C</button><button type="button" data-mirror-u="1.5">f～C</button><button type="button" data-mirror-u="1">恰在 f</button><button type="button" data-mirror-u="0.65">f 內</button><button type="button" data-mirror-u="0.4">靠近鏡面</button>
+            </div>
+          </div>
+          <p class="graph-note"><strong>讀圖：</strong>正像距代表鏡前實像，負像距代表鏡後虛像。這是物距與像距的關係圖，並非光線在空間中的位置。</p>
         </aside>
       </div>
     </section>

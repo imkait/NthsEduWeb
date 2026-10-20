@@ -3,6 +3,8 @@
   const staticLayer = document.getElementById('graph-static');
   const dynamicLayer = document.getElementById('graph-dynamic');
   const slider = document.getElementById('graph-distance');
+  const mainSlider = document.getElementById('distance-range');
+  const opticsSelect = document.getElementById('optics-select');
   const presets = [...document.querySelectorAll('[data-graph-u]')];
   const X0 = 390;
   const Y0 = 411;
@@ -82,7 +84,7 @@
     dynamicLayer.innerHTML = `<g clip-path="url(#graph-clip)">${guide}${hit}${object}${image}</g>${snapRing}${element('circle', { id: 'graph-drag-handle', cx: x(0), cy: y(u), r: 11, class: 'graph-handle' })}${imageOffscreen}${element('circle', { cx: x(1), cy: y(1), r: 6, class: 'graph-focus-dot' })}`;
   }
 
-  function setU(value, snap = true) {
+  function setU(value, snap = true, syncMain = true) {
     let next = Math.max(.4, Math.min(4, Math.round(value * 100) / 100));
     if (snap) {
       if (Math.abs(next - 1) <= .06) next = 1;
@@ -90,6 +92,10 @@
     }
     u = next;
     draw();
+    if (syncMain && opticsSelect.value === 'convex-lens') {
+      mainSlider.value = String(Math.round(u * 100));
+      mainSlider.dispatchEvent(new Event('input'));
+    }
   }
 
   slider.addEventListener('input', event => setU(Number(event.target.value)));
@@ -129,5 +135,6 @@
   };
   svg.addEventListener('pointerup', endDrag);
   svg.addEventListener('pointercancel', endDrag);
-  draw();
+  window.convexGraph = { setDistance: value => setU(value, false, false) };
+  setU(Number(mainSlider.value) / 100, false, false);
 })();

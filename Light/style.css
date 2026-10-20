@@ -64,27 +64,28 @@ canvas:active{cursor:grabbing}
 .result-stats>div{border-left:1px solid var(--line);padding-left:27px;display:flex;flex-direction:column;gap:2px}
 .result-stats span{font-size:.75rem;color:var(--muted)}.result-stats strong{font-size:1.12rem}
 .result-note{grid-column:2;color:var(--muted);font-size:.84rem;margin:0}
-.convex-graph-section{max-width:1500px;margin:0 auto;padding:0 clamp(20px,5.5vw,90px) 90px}
-.convex-graph-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:18px}
+.imaging-graph-section{max-width:1500px;margin:0 auto;padding:0 clamp(20px,5.5vw,90px) 90px}
+.imaging-graph-section[hidden]{display:none}
+.imaging-graph-layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:18px}
 .graph-board,.graph-controls,.graph-case-card{border-radius:12px;border:1px solid var(--line);box-shadow:0 14px 40px #15314308}
 .graph-board{background:var(--navy-2);color:#deedeb;min-width:0;overflow:hidden}
 .graph-board-heading{padding:17px 23px;border-bottom:1px solid #ffffff1a;display:flex;justify-content:space-between;gap:15px;align-items:center;font-size:.83rem}
 .graph-board-heading span{color:#a8c0c8;font-size:.74rem}
 .graph-scroll{overflow-x:auto;padding:10px 9px}
-#convex-plot{display:block;width:100%;height:auto;min-width:650px;touch-action:pan-x;user-select:none}
-#convex-plot .graph-grid{stroke:#244152;stroke-width:1}
-#convex-plot .graph-axis{stroke:#7594a0;stroke-width:2}
-#convex-plot .graph-tick{stroke:#90aeb2;stroke-width:1.5}
-#convex-plot .graph-guide{stroke:#f4ca68;stroke-width:3;stroke-dasharray:9 7;stroke-linecap:round}
-#convex-plot .graph-guide-hit{stroke:transparent;stroke-width:28;cursor:grab}
-#convex-plot .graph-guide-hit.dragging{cursor:grabbing}
-#convex-plot .graph-object{stroke:#ff8f9d;stroke-width:4;stroke-linecap:round}
-#convex-plot .graph-image{stroke:#7ce4c4;stroke-width:4;stroke-linecap:round}
-#convex-plot .graph-focus-dot{fill:#e0efe9;stroke:var(--navy-2);stroke-width:3}
-#convex-plot .graph-handle{fill:#ff8f9d;stroke:#fff;stroke-width:3;cursor:ns-resize}
-#convex-plot .graph-label{fill:#aac4c9;font:500 15px "Noto Sans TC",sans-serif}
-#convex-plot .graph-label-strong{fill:#deedeb;font:700 16px "Noto Sans TC",sans-serif}
-#convex-plot .graph-annotation{fill:#f4ca68;font:600 12px "DM Sans",sans-serif;letter-spacing:.04em}
+.graph-scroll svg{display:block;width:100%;height:auto;min-width:650px;touch-action:pan-x;user-select:none}
+.graph-scroll .graph-grid{stroke:#244152;stroke-width:1}
+.graph-scroll .graph-axis{stroke:#7594a0;stroke-width:2}
+.graph-scroll .graph-tick{stroke:#90aeb2;stroke-width:1.5}
+.graph-scroll .graph-guide{stroke:#f4ca68;stroke-width:3;stroke-dasharray:9 7;stroke-linecap:round}
+.graph-scroll .graph-guide-hit{stroke:transparent;stroke-width:28;cursor:grab}
+.graph-scroll .graph-guide-hit.dragging{cursor:grabbing}
+.graph-scroll .graph-object{stroke:#ff8f9d;stroke-width:4;stroke-linecap:round}
+.graph-scroll .graph-image{stroke:#7ce4c4;stroke-width:4;stroke-linecap:round}
+.graph-scroll .graph-focus-dot{fill:#e0efe9;stroke:var(--navy-2);stroke-width:3}
+.graph-scroll .graph-handle{fill:#ff8f9d;stroke:#fff;stroke-width:3;cursor:ns-resize}
+.graph-scroll .graph-label{fill:#aac4c9;font:500 15px "Noto Sans TC",sans-serif}
+.graph-scroll .graph-label-strong{fill:#deedeb;font:700 16px "Noto Sans TC",sans-serif}
+.graph-scroll .graph-annotation{fill:#f4ca68;font:600 12px "DM Sans",sans-serif;letter-spacing:.04em}
 .graph-board-footer{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap;border-top:1px solid #ffffff1a;padding:13px 23px 18px;color:#adc4c8;font-size:.74rem}
 .graph-legend{display:flex;gap:14px;flex-wrap:wrap}
 .graph-legend span{white-space:nowrap}
@@ -102,9 +103,9 @@ canvas:active{cursor:grabbing}
 .graph-range-heading{display:flex;align-items:baseline;justify-content:space-between;gap:8px}
 .graph-range-heading label{font-weight:800;font-size:.85rem}
 .graph-range-heading output{font:700 1.24rem "DM Sans",sans-serif;color:var(--teal)}
-#graph-distance{width:100%;margin:14px 0 2px;accent-color:var(--teal);cursor:pointer}
+.graph-controls input[type=range]{width:100%;margin:14px 0 2px;accent-color:var(--teal);cursor:pointer}
 .graph-range-ends{display:flex;justify-content:space-between;color:var(--muted);font-size:.72rem}
-#graph-distance-help{font-size:.72rem;color:var(--muted);line-height:1.6;margin:10px 0 16px}
+.graph-controls p{font-size:.72rem;color:var(--muted);line-height:1.6;margin:10px 0 16px}
 .graph-presets{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
 .graph-presets button{background:#f8faf8;border:1px solid #cbd8d9;border-radius:5px;color:var(--ink);padding:8px 5px;font-size:.75rem;font-weight:700;cursor:pointer}
 .graph-presets button:hover,.graph-presets button.active{background:#dcf5e9;border-color:#80c9b1}
@@ -114,6 +115,6 @@ canvas:active{cursor:grabbing}
 @media(max-width:760px){.site-header{height:62px}.site-name{font-size:.64rem;letter-spacing:.07em}.lab-section{padding:36px 18px 66px}.section-intro{display:block}.section-intro>p{margin-top:15px}.lab-layout{grid-template-columns:1fr}.control-panel{padding:22px}.control-tip{margin-top:22px}.canvas-wrap{padding:5px}.canvas-legend{padding:13px;gap:7px 12px}.result-panel{padding:22px}.result-stats{margin-top:15px}.result-stats>div{padding-left:13px}}
 @media(max-width:420px){.site-name{font-size:.58rem}.result-stats{grid-template-columns:1fr;gap:8px}.result-stats>div{border-left:0;border-top:1px solid var(--line);padding:7px 0 0;flex-direction:row;justify-content:space-between}.canvas-topline{padding:12px;font-size:.68rem}.canvas-legend{font-size:.64rem}}
 @media(max-width:760px){.canvas-wrap canvas{min-width:620px}.mobile-canvas-hint{display:block;margin:0 13px 8px;color:#b6cdd0;font-size:.7rem}}
-@media(max-width:1050px){.convex-graph-layout{grid-template-columns:1fr}.graph-side{display:grid;grid-template-columns:1fr 1fr;align-items:start}.graph-note{grid-column:1/-1}}
-@media(max-width:760px){.convex-graph-section{padding:0 18px 66px}.graph-side{display:flex}.graph-board-heading{padding:13px;align-items:flex-start;flex-direction:column;gap:4px}.graph-board-footer{padding:12px 15px}.graph-scroll{padding:5px 0}}
+@media(max-width:1050px){.imaging-graph-layout{grid-template-columns:1fr}.graph-side{display:grid;grid-template-columns:1fr 1fr;align-items:start}.graph-note{grid-column:1/-1}}
+@media(max-width:760px){.imaging-graph-section{padding:0 18px 66px}.graph-side{display:flex}.graph-board-heading{padding:13px;align-items:flex-start;flex-direction:column;gap:4px}.graph-board-footer{padding:12px 15px}.graph-scroll{padding:5px 0}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}

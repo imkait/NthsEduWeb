@@ -7,7 +7,7 @@ const presets = [...document.querySelectorAll('[data-distance]')];
 
 const W = canvas.width;
 const H = canvas.height;
-const CX = 400;
+const CX = 430;
 const CY = 225;
 const F = 100;
 const OBJECT_HEIGHT = 62;
@@ -222,6 +222,7 @@ function updateReadout(type, u, v) {
 function draw() {
   const type = select.value;
   document.getElementById('convex-graph-section').hidden = type !== 'convex-lens';
+  document.getElementById('mirror-graph-section').hidden = type !== 'concave-mirror';
   const u = Number(range.value);
   const f = type === 'convex-lens' || type === 'concave-mirror' ? F : -F;
   const v = u === f ? Infinity : f * u / (u - f);
@@ -240,6 +241,8 @@ function draw() {
     arrow(imageX, height, colors.image, '像', true);
   }
   updateReadout(type, u, v);
+  if (type === 'convex-lens') window.convexGraph?.setDistance(u / F);
+  if (type === 'concave-mirror') window.mirrorGraph?.setDistance(u / F);
 }
 
 function pointerPosition(event) {
