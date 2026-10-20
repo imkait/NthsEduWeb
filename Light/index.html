@@ -1,72 +1,97 @@
-<!DOCTYPE html>
-<html lang="zh-tw">
-
+<!doctype html>
+<html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>光的折射與反射教學網頁</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0c1b2b">
+  <meta name="description" content="拖動物體，觀察凸透鏡、凹透鏡、凹面鏡與凸面鏡的光線和成像變化。">
+  <title>光的路徑｜透鏡與面鏡互動實驗室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+  <script src="convex-graph.js" defer></script>
 </head>
-
 <body>
-    <h1>光的折射與反射教學</h1>
-    <div id="controls">
-        <label for="optics-select">選擇光學元件：</label>
-        <select id="optics-select">
-            <option value="convex-lens">凸透鏡</option>
-            <option value="concave-lens">凹透鏡</option>
-            <option value="convex-mirror">凸面鏡</option>
-            <option value="concave-mirror">凹面鏡</option>
-        </select>
-    </div>
-    <div id="legend">
-        <span class="ray-parallel">● 平行主軸過焦點</span>
-        <span class="ray-center">● 過鏡心不折射</span>
-        <span class="ray-focus">● 過焦點平行軸</span>
-    </div>
-
-    <canvas id="optics-canvas" width="800" height="400"></canvas>
-
-    <script src="script.js"></script>
-    <!-- 返回入口網頁按鈕 -->
-    <a href="../index.html" class="back-to-home-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-            <polyline points="9 22 9 12 15 12 15 22"></polyline>
-        </svg>
-        回到首頁
-    </a>
-    <style>
-        .back-to-home-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #0f4c81;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-family: 'Noto Sans TC', sans-serif;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            z-index: 9999;
-        }
-
-        .back-to-home-btn:hover {
-            background-color: #2c7da0;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        .back-to-home-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-    </style>
+  <a class="skip-link" href="#lab">跳至互動實驗</a>
+  <header class="site-header">
+    <a class="home-link" href="../index.html" aria-label="返回教學網站首頁"><span aria-hidden="true">←</span> 返回首頁</a>
+    <span class="site-name"><span class="site-mark" aria-hidden="true">◌</span> NTHS · PHYSICS LAB</span>
+  </header>
+  <main>
+    <section class="lab-section" id="lab" aria-labelledby="lab-title">
+      <div class="section-intro"><div><p class="section-kicker">01 / INTERACTIVE LAB</p><h2 id="lab-title">光學實驗室</h2></div><p>選擇元件，拖曳畫布中的藍色物體，或用滑桿精確調整物距。</p></div>
+      <div class="lab-layout">
+        <aside class="control-panel" aria-label="實驗控制">
+          <div class="panel-heading"><span class="panel-number">01</span><h3>設定條件</h3></div>
+          <label class="field-label" for="optics-select">光學元件</label>
+          <select id="optics-select">
+            <option value="convex-lens">凸透鏡 · 會聚光線</option>
+            <option value="concave-lens">凹透鏡 · 發散光線</option>
+            <option value="concave-mirror">凹面鏡 · 會聚反射</option>
+            <option value="convex-mirror">凸面鏡 · 發散反射</option>
+          </select>
+          <div class="range-heading"><label class="field-label" for="distance-range">物距 u</label><output id="distance-output" for="distance-range">250</output></div>
+          <input id="distance-range" type="range" min="45" max="320" value="250" step="1" aria-describedby="distance-help">
+          <div class="range-marks"><span>靠近元件</span><span>遠離元件</span></div>
+          <p class="field-hint" id="distance-help">圖示使用相對距離單位；焦距固定為 100。</p>
+          <div class="preset-block"><p class="field-label">快速觀察</p><div class="preset-buttons"><button type="button" data-distance="200">2F 位置</button><button type="button" data-distance="100">焦點 F</button><button type="button" data-distance="65">焦點內</button></div></div>
+          <div class="control-tip"><span aria-hidden="true">✳</span><p>試著把凸透鏡的物體移進焦點內，觀察像如何從另一側轉移到物體同側。</p></div>
+        </aside>
+        <div class="experiment-panel">
+          <div class="canvas-topline"><div class="live-indicator"><span></span> 即時光路模擬</div><span class="canvas-subtitle" id="canvas-subtitle">凸透鏡 / 會聚</span></div>
+          <div class="canvas-wrap"><canvas id="optics-canvas" width="800" height="440" aria-label="光學光路圖。可拖曳藍色物體調整物距，也可使用畫布外的滑桿。">您的瀏覽器不支援 Canvas。請使用上方滑桿及下方成像說明了解結果。</canvas></div>
+          <p class="mobile-canvas-hint">左右滑動可查看完整光路圖。</p>
+          <div class="canvas-legend" aria-label="圖例"><span><i class="legend-swatch parallel"></i>平行主軸光線</span><span><i class="legend-swatch center"></i>鏡心／頂點光線</span><span><i class="legend-swatch focal"></i>焦點光線</span><span><i class="legend-swatch virtual"></i>虛線：光線延長線</span><span><i class="legend-swatch object"></i>物體</span><span><i class="legend-swatch image"></i>像</span></div>
+          <p class="ray-status" id="ray-status" aria-live="polite"></p>
+        </div>
+      </div>
+      <div class="result-panel" aria-live="polite" aria-atomic="true">
+        <div class="result-intro"><span class="result-icon" aria-hidden="true">↗</span><div><p class="section-kicker">OBSERVATION / 觀察結果</p><h3 id="result-title">倒立的實像</h3></div></div>
+        <div class="result-stats"><div><span>像距 v</span><strong id="image-distance">167</strong></div><div><span>放大率 |m|</span><strong id="magnification">0.67×</strong></div><div><span>像的特性</span><strong id="image-nature">縮小 · 倒立</strong></div></div>
+        <p class="result-note" id="result-note">折射光在透鏡另一側實際交會，可用屏幕承接。</p>
+      </div>
+    </section>
+    <section class="convex-graph-section" id="convex-graph-section" aria-labelledby="convex-graph-title">
+      <div class="section-intro">
+        <div><p class="section-kicker">02 / CONVEX LENS</p><h2 id="convex-graph-title">凸透鏡成像座標圖</h2></div>
+        <p>讓物距與像距的輔助線繞著 (f, f) 旋轉，從兩軸截距看懂成像如何隨物體移動。</p>
+      </div>
+      <div class="convex-graph-layout">
+        <div class="graph-board">
+          <div class="graph-board-heading"><strong>物距 × 像距</strong><span id="graph-drag-status">拖曳黃色虛線或紅色圓點</span></div>
+          <div class="graph-scroll">
+            <svg id="convex-plot" viewBox="0 0 970 500" role="img" aria-label="凸透鏡物距與像距座標圖。橫軸為像距，縱軸為物距。可拖曳黃色輔助線或紅色圓點，也可用右側滑桿操作。">
+              <defs>
+                <marker id="graph-axis-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7594a0"></path></marker>
+                <marker id="graph-object-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#ff8f9d"></path></marker>
+                <marker id="graph-image-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7ce4c4"></path></marker>
+                <clipPath id="graph-clip"><rect x="42" y="24" width="888" height="420"></rect></clipPath>
+              </defs>
+              <g id="graph-static"></g><g id="graph-dynamic"></g>
+            </svg>
+          </div>
+          <div class="graph-board-footer"><span>直線固定通過 (f, f)；與縱軸、橫軸的交點分別表示物距 u、像距 v。</span><div class="graph-legend"><span><i class="graph-object-key"></i>物距</span><span><i class="graph-image-key"></i>像距</span><span><i class="graph-guide-key"></i>輔助線</span></div></div>
+        </div>
+        <aside class="graph-side" aria-label="凸透鏡座標圖控制">
+          <div class="graph-case-card" aria-live="polite" aria-atomic="true">
+            <p id="graph-case-tag">U &gt; 2F</p><h3 id="graph-case-title">物在 2f 外</h3><p id="graph-case-description">成倒立、縮小的實像，像落在 f 與 2f 之間。</p>
+            <div class="graph-stats"><div><span>物距 u</span><strong id="graph-u-value">2.50 f</strong></div><div><span>像距 v</span><strong id="graph-v-value">1.67 f</strong></div></div>
+          </div>
+          <div class="graph-controls">
+            <div class="graph-range-heading"><label for="graph-distance">調整物距</label><output id="graph-range-value" for="graph-distance">2.50 f</output></div>
+            <input id="graph-distance" type="range" min="0.4" max="4" step="0.01" value="2.5" aria-describedby="graph-distance-help">
+            <div class="graph-range-ends"><span>焦點內 0.4f</span><span>4f</span></div>
+            <p id="graph-distance-help">這張座標圖可獨立調整；數值以焦距 f 為單位。</p>
+            <div class="graph-presets" aria-label="快速觀察位置">
+              <button type="button" data-graph-u="4">2f 外</button><button type="button" data-graph-u="2">恰在 2f</button><button type="button" data-graph-u="1.5">f～2f</button><button type="button" data-graph-u="1">恰在 f</button><button type="button" data-graph-u="0.65">f 內</button><button type="button" data-graph-u="0.4">更靠近透鏡</button>
+            </div>
+          </div>
+          <p class="graph-note"><strong>讀圖：</strong>橫軸左側是虛像區，右側是實像區。物體接近焦點時，像距會快速增大；恰在焦點時，像位於無限遠。</p>
+        </aside>
+      </div>
+    </section>
+  </main>
 </body>
-
 </html>
