@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="拖曳入射光線，觀察光在兩種介質間的反射、折射與全反射。">
+  <title>光的折射與反射｜互動光路實驗室</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#lab">跳至光路模擬器</a>
+  <header class="site-header">
+    <a class="home-link" href="../index.html"><span aria-hidden="true">←</span> 返回首頁</a>
+    <span class="site-name"><span class="site-mark" aria-hidden="true">✳</span> NTHS · PHYSICS LAB</span>
+  </header>
+
+  <main id="lab" class="page-shell">
+    <div class="page-heading">
+      <div>
+        <p class="eyebrow">INTERACTIVE OPTICS / 互動光學</p>
+        <h1>光的折射與反射<span class="title-dot">.</span></h1>
+        <p class="lead">讓一束光穿過兩種介質的交界，親手找出光路改變的規律。</p>
+      </div>
+      <div class="lesson-index" aria-label="物理科互動單元"><span>PHYSICS</span><strong>01</strong><span>光的行進</span></div>
+    </div>
+
+    <div class="lab-layout">
+      <aside class="control-panel" aria-labelledby="controls-title">
+        <div class="panel-title"><span class="panel-number">01</span><div><p class="eyebrow">SETUP</p><h2 id="controls-title">設定實驗條件</h2></div></div>
+        <div class="control-group">
+          <label for="medium-pair">介質組合 <span class="medium-role">位置固定</span></label>
+          <select id="medium-pair">
+            <option value="air-water">上：空氣 ／ 下：水</option>
+            <option value="air-glass">上：空氣 ／ 下：玻璃</option>
+            <option value="water-glass">上：水 ／ 下：玻璃</option>
+          </select>
+        </div>
+        <div class="control-group">
+          <label for="ray-direction">入射方向 <span class="medium-role">切換光源位置</span></label>
+          <select id="ray-direction">
+            <option value="down">由上往下 ↘</option>
+            <option value="up">由下往上 ↗</option>
+          </select>
+        </div>
+        <div class="control-group angle-group">
+          <div class="label-row"><label for="angle-range">入射角 <span class="math-symbol">θ<sub>i</sub></span></label><output id="angle-output" for="angle-range">42°</output></div>
+          <input id="angle-range" type="range" min="0" max="80" step="1" value="42" aria-describedby="angle-help">
+          <div class="range-ends"><span>0°</span><span>80°</span></div>
+          <p class="control-hint" id="angle-help">從法線量起；也可以拖曳圖中的橘色光源。</p>
+        </div>
+        <div class="preset-area">
+          <p class="preset-label">快速觀察</p>
+          <div class="preset-buttons">
+            <button type="button" data-preset="bend-in">偏向法線 <span aria-hidden="true">↘</span></button>
+            <button type="button" data-preset="bend-out">偏離法線 <span aria-hidden="true">↗</span></button>
+            <button type="button" data-preset="tir">全反射 <span aria-hidden="true">↩</span></button>
+          </div>
+        </div>
+        <div class="control-footnote"><span aria-hidden="true">✦</span><p>保持介質位置不變，切換光的入射方向，再慢慢增大入射角。</p></div>
+      </aside>
+
+      <section class="experiment-panel" aria-labelledby="diagram-title">
+        <div class="stage-heading"><div><span class="live-dot" aria-hidden="true"></span><h2 id="diagram-title">即時光路模擬</h2></div><span class="stage-tag" id="stage-tag">折射中</span></div>
+        <div class="diagram-wrap">
+          <svg id="ray-diagram" viewBox="0 0 900 560" role="img" aria-labelledby="diagram-title diagram-description">
+            <desc id="diagram-description">光從上方空氣以 42 度入射下方水面，同時產生反射與折射。可拖曳橘色光源改變入射角。</desc>
+            <defs>
+              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="#4a7e99" stroke-opacity=".09" stroke-width="1"/></pattern>
+              <filter id="ray-glow" x="-100%" y="-100%" width="300%" height="300%"><feGaussianBlur stdDeviation="7"/></filter>
+              <marker id="arrow-incident" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a84d17"/></marker>
+              <marker id="arrow-reflected" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#096486"/></marker>
+              <marker id="arrow-refracted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1e7354"/></marker>
+            </defs>
+            <rect id="upper-field" width="900" height="280" fill="#FDFFFF"/>
+            <rect id="lower-field" y="280" width="900" height="280" fill="#ECF5FF"/>
+            <rect width="900" height="560" fill="url(#grid)"/>
+            <path id="interface-line" d="M 0 280 H 900" stroke="#39718d" stroke-opacity=".85" stroke-width="2"/>
+            <path d="M 450 37 V 523" stroke="#476f86" stroke-opacity=".75" stroke-width="2" stroke-dasharray="8 9"/>
+            <text x="464" y="52" class="diagram-minor">法線</text>
+            <text x="40" y="60" class="diagram-medium" id="upper-label">空氣</text>
+            <text x="40" y="86" class="diagram-index" id="upper-index">n = 1.00</text>
+            <text x="40" y="490" class="diagram-medium" id="lower-label">水</text>
+            <text x="40" y="516" class="diagram-index" id="lower-index">n = 1.33</text>
+            <text x="733" y="269" class="diagram-minor">介面</text>
+            <g id="rays">
+              <path id="incident-glow" class="ray-glow"/>
+              <path id="reflected-glow" class="ray-glow"/>
+              <path id="refracted-glow" class="ray-glow"/>
+              <path id="incident-ray" class="ray incident" marker-end="url(#arrow-incident)"/>
+              <path id="reflected-ray" class="ray reflected" marker-end="url(#arrow-reflected)"/>
+              <path id="refracted-ray" class="ray refracted" marker-end="url(#arrow-refracted)"/>
+            </g>
+            <g id="angle-guides">
+              <path id="incident-arc" class="angle-arc incident-stroke"/>
+              <path id="reflected-arc" class="angle-arc reflected-stroke"/>
+              <path id="refracted-arc" class="angle-arc refracted-stroke"/>
+              <text id="incident-angle-label" class="angle-text incident-fill">42°</text>
+              <text id="reflected-angle-label" class="angle-text reflected-fill">42°</text>
+              <text id="refracted-angle-label" class="angle-text refracted-fill">30°</text>
+            </g>
+            <circle cx="450" cy="280" r="5" fill="#1c526c"/>
+            <g id="source-handle" class="source-handle" role="button" tabindex="0" aria-label="拖曳光源調整入射角；也可以使用入射角滑桿">
+              <circle class="handle-hit" r="32" fill="transparent"/>
+              <circle class="handle-halo" r="21"/>
+              <circle class="handle-core" r="10"/>
+              <path d="M -4 0 H 4 M 0 -4 V 4" stroke="#11253a" stroke-width="1.5"/>
+            </g>
+            <text id="incident-ray-name" class="ray-name incident-fill">入射光</text>
+            <text id="reflected-ray-name" class="ray-name reflected-fill">反射光</text>
+            <text id="refracted-ray-name" class="ray-name refracted-fill">折射光</text>
+          </svg>
+        </div>
+        <div class="diagram-bottom"><p id="stage-note">拖曳橘色光源，觀察反射光與折射光如何移動。</p><div class="legend"><span><i class="legend-line incident-bg"></i>入射</span><span><i class="legend-line reflected-bg"></i>反射</span><span><i class="legend-line refracted-bg"></i>折射</span></div></div>
+      </section>
+    </div>
+
+    <section class="result-section" aria-labelledby="snell-title">
+      <div class="snell-card"><p class="eyebrow">02 / SNELL'S LAW</p><h2 id="snell-title">斯乃耳定律</h2><p id="snell-symbolic" class="snell-symbolic">n₁ sin θᵢ = n₂ sin θₜ</p><div class="snell-equation" aria-live="polite"><span id="snell-left">1 × sin 42°</span><span id="snell-relation">=</span><span id="snell-right">1.33 × sin 30.2°</span></div><p id="snell-note" class="snell-note">空氣 → 水；折射角顯示至小數一位。</p></div>
+      <div class="stat-card"><span>入射角 <em>θ<sub>i</sub></em></span><strong id="incident-value">42°</strong></div>
+      <div class="stat-card"><span>反射角 <em>θ<sub>r</sub></em></span><strong id="reflected-value">42°</strong></div>
+      <div class="stat-card"><span>折射角 <em>θ<sub>t</sub></em></span><strong id="refracted-value">30.2°</strong></div>
+    </section>
+
+    <section class="intensity-panel" aria-labelledby="intensity-title">
+      <div class="intensity-heading"><div><p class="eyebrow">03 / LIGHT INTENSITY</p><h2 id="intensity-title">光的強度分配</h2></div><p id="intensity-status" aria-live="polite">一部分光被反射，其餘進入另一種介質。</p></div>
+      <div class="intensity-flow">
+        <div class="incident-total"><span>入射光</span><strong>100%</strong></div>
+        <span class="flow-arrow" aria-hidden="true">→</span>
+        <div class="intensity-result">
+          <div class="intensity-values"><span><i class="intensity-dot reflected-bg"></i>反射光 <strong id="reflection-percent">—</strong></span><span><i class="intensity-dot refracted-bg"></i>折射光 <strong id="transmission-percent">—</strong></span></div>
+          <div class="intensity-bar" id="intensity-bar" role="img" aria-label="反射光與折射光的強度比例"><span id="reflection-bar" class="reflection-bar"></span><span id="transmission-bar" class="transmission-bar"></span></div>
+        </div>
+      </div>
+      <p class="intensity-note">百分比以未偏振光通過平滑、不吸收光的介面估算；光線粗細輔助表示強弱，請以百分比為準。</p>
+    </section>
+
+    <section class="explain-panel" aria-labelledby="explain-title">
+      <div class="explain-heading"><span class="explain-icon" aria-hidden="true">✦</span><h2 id="explain-title">斯乃耳定律與光路規律</h2></div>
+      <div class="explain-content">
+        <div><h3>先看角度</h3><p>入射角、反射角、折射角都從垂直介面的「法線」量起。反射角永遠等於入射角。</p></div>
+        <div><h3>再看折射方向</h3><p>進入折射率較大的介質時，光線偏向法線；進入折射率較小的介質時，光線偏離法線。</p></div>
+        <div><h3>斯乃耳定律</h3><p class="formula">n<sub>1</sub> sin θ<sub>i</sub> = n<sub>2</sub> sin θ<sub>t</sub></p><p>折射率 n 描述光在介質中傳播速度的變化。從較大折射率射向較小折射率且入射角超過臨界角時，沒有折射光線，稱為全反射。</p></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
