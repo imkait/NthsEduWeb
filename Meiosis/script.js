@@ -2,11 +2,11 @@
  * =============================================
  * 減數分裂互動教學網頁 - JavaScript 腳本
  * =============================================
- * 
+ *
  * 此腳本包含以下功能模組：
  * 1. 粒子背景動畫 (ParticleBackground)
  * 2. 減數分裂動畫模擬器 (MeiosisSimulator)
- * 3. 染色體互換拖放遊戲 (CrossingOverGame)
+ * 3. 染色分體互換體驗 (CrossingOverGame)
  * 4. 翻牌比較卡片 (FlipCards)
  * 5. 互動測驗系統 (QuizManager)
  * 6. 滾動顯示動畫 (ScrollReveal)
@@ -144,13 +144,13 @@ class MeiosisSimulator {
             {
                 name: '間期',
                 title: '間期 (Interphase)',
-                description: '細胞在進行減數分裂前，DNA 會先進行複製，形成由兩條姊妹染色分體組成的染色體。此時染色質呈散開狀態。',
-                highlights: ['DNA 複製', '染色體形成', '細胞生長']
+                description: '分裂前的間期，DNA 在 S 期複製：染色體條數仍是 2n=4，但 DNA 量由 2C 增至 4C。此時染色質尚未凝縮。',
+                highlights: ['S 期 DNA 複製', '染色體條數不變', '細胞生長']
             },
             {
                 name: '第一階段：前期',
                 title: '第一階段：前期 (Prophase I)',
-                description: '這是最關鍵的時期！同源染色體配對形成「聯會複合體」，並發生「互換」(Crossing Over)，交換遺傳物質。',
+                description: '同源染色體配對形成聯會複合體；非姊妹染色分體可互換對應片段。本動畫只示範分離過程，未繪出互換後的片段。',
                 highlights: ['同源染色體配對', '聯會', '互換']
             },
             {
@@ -162,8 +162,8 @@ class MeiosisSimulator {
             {
                 name: '第一階段：後期',
                 title: '第一階段：後期 (Anaphase I)',
-                description: '同源染色體分離，移向細胞兩極。注意：此時姊妹染色分體仍然相連，這是染色體數目減半的關鍵步驟！',
-                highlights: ['同源染色體分離', '染色體數目減半']
+                description: '同源染色體分離並移向兩極；姊妹染色分體仍相連。每一極將各得到一套染色體，第一次分裂完成後，每個子細胞為單倍體。',
+                highlights: ['同源染色體分離', '每極將得到一套']
             },
             {
                 name: '第一階段：末期',
@@ -192,8 +192,8 @@ class MeiosisSimulator {
             {
                 name: '第二階段：末期',
                 title: '第二階段：末期 (Telophase II)',
-                description: '分裂完成！形成 4 個單倍體子細胞，每個細胞的染色體數目是原來的一半，且遺傳組成各不相同。',
-                highlights: ['4 個子細胞', '單倍體 (n)', '遺傳多樣性']
+                description: '分裂後形成 4 個單倍體產物，每個含 n=2 條染色體。本圖固定一種排列且未畫互換，所以兩兩看似相同；真實減數分裂通常會因互換和隨機排列產生差異。',
+                highlights: ['4 個單倍體產物', '每個 n=2', '圖解未顯示互換']
             }
         ];
 
@@ -216,7 +216,9 @@ class MeiosisSimulator {
     createProgressSteps() {
         this.progressSteps.innerHTML = '';
         this.stages.forEach((stage, index) => {
-            const step = document.createElement('div');
+            const step = document.createElement('button');
+            step.type = 'button';
+            step.setAttribute('aria-label', `前往${stage.name}`);
             step.className = 'progress-step' + (index === 0 ? ' active' : '');
             step.title = stage.name;
             step.addEventListener('click', () => this.goToStage(index));
@@ -376,14 +378,15 @@ class MeiosisSimulator {
             .map(h => `<span class="highlight-tag">${h}</span>`)
             .join('');
 
-        // 渲染染色體動畫
+        // 第一次細胞質分裂後，隱藏單一母細胞的外框。
+        this.svg.querySelector('.cell-membrane').style.display = index >= 4 ? 'none' : '';
         this.renderChromosomes(index);
     }
 
     /**
      * 渲染染色體視覺效果
      * @param {number} stageIndex - 階段索引
-     * 
+     *
      * 染色體配色說明：
      * - 長染色體對：藍色(父源) + 紅色(母源)
      * - 短染色體對：淺藍色(父源) + 淺紅色(母源)
@@ -406,10 +409,10 @@ class MeiosisSimulator {
                         <circle cx="420" cy="280" r="35" fill="none" stroke="#93c5fd" stroke-width="3" stroke-dasharray="8,4"/>
                         <circle cx="480" cy="260" r="35" fill="none" stroke="#fca5a5" stroke-width="3" stroke-dasharray="8,4"/>
                         <text x="400" y="380" fill="#6b7280" font-size="12" text-anchor="middle">DNA 複製中...</text>
-                        <!-- 染色體/DNA數目標示 -->                        
-                        <text x="550" y="160" fill="#facc15" font-size="13" font-weight="bold">染色質複製(S期)</text>                        
-                        <text x="550" y="180" fill="#d381e6ff" font-size="13" font-weight="bold">中心體複製(G2期)</text>
-                        <text x="550" y="200" fill="#22c55e" font-size="13" font-weight="bold">2N/2a->2N/4a</text>
+                        <!-- 染色體/DNA數目標示 -->
+                        <text x="550" y="160" fill="#facc15" font-size="13" font-weight="bold">DNA 複製（S 期）</text>
+                        <text x="550" y="180" fill="#d381e6ff" font-size="13" font-weight="bold">細胞準備分裂（G₂ 期）</text>
+                        <text x="550" y="200" fill="#22c55e" font-size="13" font-weight="bold">2n / 2C → 2n / 4C</text>
 
                     </g>
                 `;
@@ -453,10 +456,10 @@ class MeiosisSimulator {
                         <!-- 互換標示 -->
                         <text x="400" y="320" fill="#f59e0b" font-size="14" text-anchor="middle">⟵ 互換 (Crossing Over) ⟶</text>
                         <!-- 染色體/DNA數目標示 -->
-                        <text x="250" y="120" fill="#facc15" font-size="13" font-weight="bold">二分體：1個中節連接姐妹染色分體</text>  
-                        <text x="250" y="140" fill="#87dae9ff" font-size="13" font-weight="bold">四分體：1對同源姐妹染色分體(2個中節)，由聯會複合體連接</text>
-                        <text x="200" y="360" fill="#b4b8b9ff" font-size="13" font-weight="bold">聯會複合體：位於兩條同源染色體之間(圖中淺灰色），幫助互換</text>
-                        <text x="550" y="200" fill="#22c55e" font-size="14" font-weight="bold">2N / 4a</text>
+                        <text x="250" y="120" fill="#facc15" font-size="13" font-weight="bold">一條複製後染色體：兩條姊妹染色分體</text>
+                        <text x="250" y="140" fill="#87dae9ff" font-size="13" font-weight="bold">四分體：一對同源染色體，共四條染色分體</text>
+                        <text x="200" y="360" fill="#b4b8b9ff" font-size="13" font-weight="bold">聯會複合體位於同源染色體之間，促進互換</text>
+                        <text x="550" y="200" fill="#22c55e" font-size="14" font-weight="bold">2n / 4C</text>
 
                     </g>
                 `;
@@ -536,9 +539,9 @@ class MeiosisSimulator {
                     </g>
                     <!-- 標示文字 -->
                     <text x="400" y="420" fill="#22d3ee" font-size="12" text-anchor="middle">赤道板 (Metaphase Plate)</text>
-                    <text x="250" y="110" fill="#facc15" font-size="13" font-weight="bold">同源染色體聯會並被紡錘絲拉扯，排列於赤道板(中期板)</text>  
+                    <text x="250" y="110" fill="#facc15" font-size="13" font-weight="bold">同源染色體聯會並被紡錘絲拉扯，排列於赤道板(中期板)</text>
                     <!-- 染色體/DNA數目標示 -->
-                    <text x="700" y="150" fill="#22c55e" font-size="14" font-weight="bold">2N / 4a</text>
+                    <text x="700" y="150" fill="#22c55e" font-size="14" font-weight="bold">2n / 4C</text>
 
                 `;
                 break;
@@ -616,12 +619,12 @@ class MeiosisSimulator {
                     <!-- 箭頭標示 -->
                     <text x="180" y="160" fill="#22d3ee" font-size="20">←</text>
                     <text x="600" y="160" fill="#22d3ee" font-size="20">→</text>
-                    <text x="400" y="380" fill="#f59e0b" font-size="12" text-anchor="middle">染色體數目減半！</text>
+                    <text x="400" y="380" fill="#f59e0b" font-size="12" text-anchor="middle">每極各得一套染色體</text>
                     <!-- 染色體/DNA數目標示 -->
-                    <text x="190" y="400" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">N / 2a</text>
-                    <text x="580" y="400" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">N / 2a</text>
-                    <text x="400" y="400" fill="#f59e0b" font-size="11" text-anchor="middle">2N/4a → N/2a</text>
-                    <text x="200" y="120" fill="#facc15" font-size="13" font-weight="bold">同源染色體被紡錘絲往兩極拉開，各自以二分體形式是被搬運到細胞兩側</text>  
+                    <text x="190" y="400" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">n / 2C</text>
+                    <text x="580" y="400" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">n / 2C</text>
+                    <text x="400" y="400" fill="#f59e0b" font-size="11" text-anchor="middle">每極 n / 2C；分裂後各 n / 2C</text>
+                    <text x="200" y="120" fill="#facc15" font-size="13" font-weight="bold">同源染色體向兩極移動，姊妹染色分體仍相連</text>
 
                 `;
                 break;
@@ -645,7 +648,7 @@ class MeiosisSimulator {
                             <!-- 著絲點（中節）-->
                             <ellipse cx="5" cy="17" rx="8" ry="3" fill="#1e40af" stroke="#fff" stroke-width="1"/>
                         </g>
-                        
+
                         <!-- 右側細胞 (母源：紅色長 + 淺紅色短) -->
                         <ellipse cx="600" cy="250" rx="140" ry="120" fill="none" stroke="url(#membrane-gradient)" stroke-width="3"/>
                         <g transform="translate(555, 200)">
@@ -663,11 +666,11 @@ class MeiosisSimulator {
                             <ellipse cx="5" cy="17" rx="8" ry="3" fill="#991b1b" stroke="#fff" stroke-width="1"/>
                         </g>
                     </g>
-                    
+
                     <!-- 染色體/DNA數目標示 -->
-                    <text x="200" y="390" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">N / 2a</text>                
-                    <text x="600" y="390" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">N / 2a</text>
-                    <text x="250" y="120" fill="#facc15" font-size="13" font-weight="bold">紡錘絲消失，核膜重新出現，逐漸分裂成兩個細胞</text>  
+                    <text x="200" y="390" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">n / 2C</text>
+                    <text x="600" y="390" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">n / 2C</text>
+                    <text x="250" y="120" fill="#facc15" font-size="13" font-weight="bold">紡錘絲消失，核膜重新出現，逐漸分裂成兩個細胞</text>
                 `;
                 break;
 
@@ -690,7 +693,7 @@ class MeiosisSimulator {
                             <!-- 著絲點（中節）-->
                             <ellipse cx="4" cy="12" rx="7" ry="3" fill="#3b82f6" stroke="#fff" stroke-width="1"/>
                         </g>
-                        
+
                         <!-- 右側細胞 -->
                         <ellipse cx="600" cy="250" rx="140" ry="120" fill="none" stroke="url(#membrane-gradient)" stroke-width="3"/>
                         <g transform="translate(555, 210)">
@@ -750,12 +753,12 @@ class MeiosisSimulator {
                         <path d="M 614 232 C 570 270, 500 275, 480 250" stroke="#fca5a5" stroke-width="1" fill="none"/>
                         <path d="M 614 232 C 650 270, 705 275, 720 250" stroke="#fca5a5" stroke-width="1" fill="none"/>
                     </g>
-                    <text x="250" y="120" fill="#facc15" font-size="13" font-weight="bold">核膜、核仁消失，中心體移至兩極，紡錘絲形成</text>  
+                    <text x="250" y="120" fill="#facc15" font-size="13" font-weight="bold">核膜、核仁消失，中心體移至兩極，紡錘絲形成</text>
 
                     <!-- 染色體/DNA數目標示 -->
-                    <text x="200" y="390" fill="#22c55e" font-size="12" text-anchor="middle">N / 2a</text>
-                    <text x="600" y="390" fill="#22c55e" font-size="12" text-anchor="middle">N / 2a</text>
-                    
+                    <text x="200" y="390" fill="#22c55e" font-size="12" text-anchor="middle">n / 2C</text>
+                    <text x="600" y="390" fill="#22c55e" font-size="12" text-anchor="middle">n / 2C</text>
+
                     <text x="200" y="150" fill="#6b7280" font-size="12" font-weight="bold" text-anchor="middle">紡錘絲形成</text>
                     <text x="600" y="150" fill="#6b7280" font-size="12" font-weight="bold" text-anchor="middle">紡錘絲形成</text>
                 `;
@@ -766,7 +769,7 @@ class MeiosisSimulator {
                     <g class="metaphase-ii">
                         <!-- ===== 左側細胞 (父源/藍色) ===== -->
                         <ellipse cx="200" cy="250" rx="140" ry="120" fill="none" stroke="url(#membrane-gradient)" stroke-width="3"/>
-                        
+
                         <!-- 左側細胞 - 左中心體(紡錘絲交會點) -->
                         <g class="centrosome-left-cell-left">
                             <circle cx="80" cy="250" r="4" fill="#fbbf24" opacity="0.9"/>
@@ -777,7 +780,7 @@ class MeiosisSimulator {
                             <circle cx="320" cy="250" r="4" fill="#fbbf24" opacity="0.9"/>
                             <circle cx="320" cy="250" r="8" fill="none" stroke="#fbbf24" stroke-width="0.8" opacity="0.3"/>
                         </g>
-                        
+
                         <!-- 左側細胞 - 紡錘絲（曲線從著絲點匯聚到中心體）-->
                         <g class="spindle-left-cell" opacity="0.6">
                             <!-- 長染色體著絲點(193,220) → 左中心體(80,250) -->
@@ -791,10 +794,10 @@ class MeiosisSimulator {
                             <!-- 短染色體著絲點(194,280) → 右中心體(320,250) -->
                             <path d="M 194 280 C 230 310, 300 285, 320 250" stroke="#93c5fd" stroke-width="1.2" fill="none"/>
                         </g>
-                        
+
                         <!-- 左側細胞 - 赤道板（畫在兩條染色體中間：長染色體著絲點 y=220，短染色體著絲點 y=280，赤道板 x 對齊著絲點 x=193）-->
                         <line x1="193" y1="150" x2="193" y2="350" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="3,3"/>
-                        
+
                         <!-- 左側細胞 - 長染色體 (姊妹染色分體) - 以赤道板為中心 -->
                         <g transform="translate(193, 195)">
                             <!-- 姊妹染色分體 - )( 形狀，中間交會 -->
@@ -812,10 +815,10 @@ class MeiosisSimulator {
                             <ellipse cx="0" cy="12" rx="8" ry="3" fill="#1e40af" stroke="#fff" stroke-width="1"/>
                         </g>
                         <text x="200" y="385" fill="#3b82f6" font-size="10" text-anchor="middle">父源細胞</text>
-                        
+
                         <!-- ===== 右側細胞 (母源/紅色) ===== -->
                         <ellipse cx="600" cy="250" rx="140" ry="120" fill="none" stroke="url(#membrane-gradient)" stroke-width="3"/>
-                        
+
                         <!-- 右側細胞 - 左中心體(紡錘絲交會點) -->
                         <g class="centrosome-right-cell-left">
                             <circle cx="480" cy="250" r="4" fill="#fbbf24" opacity="0.9"/>
@@ -826,7 +829,7 @@ class MeiosisSimulator {
                             <circle cx="720" cy="250" r="4" fill="#fbbf24" opacity="0.9"/>
                             <circle cx="720" cy="250" r="8" fill="none" stroke="#fbbf24" stroke-width="0.8" opacity="0.3"/>
                         </g>
-                        
+
                         <!-- 右側細胞 - 紡錘絲（曲線從著絲點匯聚到中心體）-->
                         <g class="spindle-right-cell" opacity="0.6">
                             <!-- 長染色體著絲點(593,220) → 左中心體(480,250) -->
@@ -840,10 +843,10 @@ class MeiosisSimulator {
                             <!-- 短染色體著絲點(594,280) → 右中心體(720,250) -->
                             <path d="M 594 280 C 630 310, 700 285, 720 250" stroke="#fca5a5" stroke-width="1.2" fill="none"/>
                         </g>
-                        
+
                         <!-- 右側細胞 - 赤道板（對齊著絲點 x=593）-->
                         <line x1="593" y1="150" x2="593" y2="350" stroke="#22d3ee" stroke-width="1.5" stroke-dasharray="3,3"/>
-                        
+
                         <!-- 右側細胞 - 長染色體 (姊妹染色分體) - 以赤道板為中心 -->
                         <g transform="translate(593, 195)">
                             <!-- 姊妹染色分體 - )( 形狀，中間交會 -->
@@ -863,10 +866,10 @@ class MeiosisSimulator {
                         <text x="600" y="385" fill="#ef4444" font-size="10" text-anchor="middle">母源細胞</text>
                     </g>
                     <!-- 說明文字 -->
-                    <text x="300" y="120" fill="#facc15" font-size="13" font-weight="bold">姊妹染色分體排列在赤道板上，準備分離</text>
+                    <text x="300" y="120" fill="#facc15" font-size="13" font-weight="bold">複製後染色體排列在赤道板上，準備分離</text>
                     <!-- 染色體/DNA數目標示 -->
-                    <text x="200" y="140" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">N / 2a</text>
-                    <text x="600" y="140" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">N / 2a</text>
+                    <text x="200" y="140" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">n / 2C</text>
+                    <text x="600" y="140" fill="#22c55e" font-size="12" font-weight="bold" text-anchor="middle">n / 2C</text>
                 `;
                 break;
 
@@ -891,7 +894,7 @@ class MeiosisSimulator {
                         <g transform="translate(235, 235)">
                             <path d="M 0 0 Q -2 7 0 15" stroke="#93c5fd" stroke-width="4" fill="none" stroke-linecap="round"/>
                         </g>
-                        
+
                         <!-- 右側細胞 -->
                         <ellipse cx="600" cy="250" rx="140" ry="120" fill="none" stroke="url(#membrane-gradient)" stroke-width="3"/>
                         <!-- 紅色長分離 - 往左極 ) 形 -->
@@ -963,9 +966,9 @@ class MeiosisSimulator {
                     <text x="530" y="200" fill="#22d3ee" font-size="14">←</text>
                     <text x="655" y="200" fill="#22d3ee" font-size="14">→</text>
                     <!-- 染色體/DNA數目標示 -->
-                    <text x="200" y="390" fill="#22c55e" font-size="11" font-weight="bold" text-anchor="middle">N/2a → N/a</text>
-                    <text x="600" y="390" fill="#22c55e" font-size="11" font-weight="bold" text-anchor="middle">N/2a → N/a</text>
-                    <text x="250" y="120" fill="#facc15" font-size="13" font-weight="bold">紡錘絲縮短，姐妹染色體從中節處分離，各自移往兩極</text>  
+                    <text x="200" y="390" fill="#22c55e" font-size="11" font-weight="bold" text-anchor="middle">每極 n / 1C</text>
+                    <text x="600" y="390" fill="#22c55e" font-size="11" font-weight="bold" text-anchor="middle">每極 n / 1C</text>
+                    <text x="250" y="120" fill="#facc15" font-size="13" font-weight="bold">姊妹染色分體分離，成為獨立染色體並移向兩極</text>
 
                 `;
                 break;
@@ -979,40 +982,40 @@ class MeiosisSimulator {
                             <path d="M 0 0 Q 3 10 0 20" stroke="url(#chr-blue)" stroke-width="4" fill="none" stroke-linecap="round"/>
                             <path d="M 15 3 Q 17 8 15 13" stroke="#93c5fd" stroke-width="3" fill="none" stroke-linecap="round"/>
                         </g>
-                        <text x="150" y="275" fill="#3b82f6" font-size="11" text-anchor="middle">N (父源)</text>
-                        
+                        <text x="150" y="275" fill="#3b82f6" font-size="11" text-anchor="middle">n（父源組合）</text>
+
                         <!-- 子細胞 2：藍色長 + 淺藍色短 -->
                         <ellipse cx="310" cy="200" rx="70" ry="60" fill="none" stroke="url(#membrane-gradient)" stroke-width="2"/>
                         <g transform="translate(293, 183)">
                             <path d="M 0 0 Q -3 10 0 20" stroke="url(#chr-blue)" stroke-width="4" fill="none" stroke-linecap="round"/>
                             <path d="M 15 3 Q 13 8 15 13" stroke="#93c5fd" stroke-width="3" fill="none" stroke-linecap="round"/>
                         </g>
-                        <text x="310" y="275" fill="#3b82f6" font-size="11" text-anchor="middle">N (父源)</text>
-                        
+                        <text x="310" y="275" fill="#3b82f6" font-size="11" text-anchor="middle">n（父源組合）</text>
+
                         <!-- 子細胞 3：紅色長 + 淺紅色短 -->
                         <ellipse cx="490" cy="200" rx="70" ry="60" fill="none" stroke="url(#membrane-gradient)" stroke-width="2"/>
                         <g transform="translate(473, 183)">
                             <path d="M 0 0 Q 3 10 0 20" stroke="url(#chr-red)" stroke-width="4" fill="none" stroke-linecap="round"/>
                             <path d="M 15 3 Q 17 8 15 13" stroke="#fca5a5" stroke-width="3" fill="none" stroke-linecap="round"/>
                         </g>
-                        <text x="490" y="275" fill="#ef4444" font-size="11" text-anchor="middle">N (母源)</text>
-                        
+                        <text x="490" y="275" fill="#ef4444" font-size="11" text-anchor="middle">n（母源組合）</text>
+
                         <!-- 子細胞 4：紅色長 + 淺紅色短 -->
                         <ellipse cx="650" cy="200" rx="70" ry="60" fill="none" stroke="url(#membrane-gradient)" stroke-width="2"/>
                         <g transform="translate(633, 183)">
                             <path d="M 0 0 Q -3 10 0 20" stroke="url(#chr-red)" stroke-width="4" fill="none" stroke-linecap="round"/>
                             <path d="M 15 3 Q 13 8 15 13" stroke="#fca5a5" stroke-width="3" fill="none" stroke-linecap="round"/>
                         </g>
-                        <text x="650" y="275" fill="#ef4444" font-size="11" text-anchor="middle">N (母源)</text>
-                        
+                        <text x="650" y="275" fill="#ef4444" font-size="11" text-anchor="middle">n（母源組合）</text>
+
                         <!-- 完成標示 -->
-                        <text x="400" y="340" fill="#22c55e" font-size="16" text-anchor="middle" font-weight="bold">✓ 形成 4 個單倍體配子</text>
+                        <text x="400" y="340" fill="#22c55e" font-size="16" text-anchor="middle" font-weight="bold">✓ 形成 4 個單倍體產物</text>
 
                         <!-- 染色體/DNA數目標示 -->
-                        <text x="400" y="410" fill="#22c55e" font-size="14" font-weight="bold" text-anchor="middle">N / a</text>
+                        <text x="400" y="410" fill="#22c55e" font-size="14" font-weight="bold" text-anchor="middle">n / 1C</text>
 
                          <!-- 說明文字 -->
-                        <text x="200" y="120" fill="#facc15" font-size="13" font-weight="bold">紡錘絲消失，核膜重新出現，各自分裂成2個子細胞(共4個配子)</text>
+                        <text x="200" y="120" fill="#facc15" font-size="13" font-weight="bold">紡錘絲消失，形成四個單倍體產物（本圖未畫互換）</text>
 
                     </g>
                 `;
@@ -1024,166 +1027,45 @@ class MeiosisSimulator {
 }
 
 // =============================================
-// 3. 染色體互換拖放遊戲
+// 3. 染色分體互換體驗
 // =============================================
 class CrossingOverGame {
-    /**
-     * 建構互換拖放遊戲
-     */
     constructor() {
-        this.stage = document.getElementById('crossing-over-stage');
+        this.model = document.getElementById('chromatid-model');
         this.result = document.getElementById('crossing-result');
         this.resetBtn = document.getElementById('btn-reset-crossing');
-
-        if (!this.stage) return;
-
-        this.swapCount = 0;     // 互換次數
-        this.targetSwaps = 2;    // 目標互換次數
-
-        this.init();
-    }
-
-    /**
-     * 初始化遊戲
-     */
-    init() {
-        this.bindDragEvents();
-        this.bindResetEvent();
-    }
-
-    /**
-     * 綁定拖放事件
-     */
-    bindDragEvents() {
-        // 取得所有可拖曳的片段
-        const draggables = this.stage.querySelectorAll('.chr-blue-drag .chr-segment');
-        const dropZones = this.stage.querySelectorAll('.drop-zone');
-
-        // 為每個可拖曳元素綁定事件
-        draggables.forEach(draggable => {
-            draggable.addEventListener('dragstart', (e) => this.handleDragStart(e));
-            draggable.addEventListener('dragend', (e) => this.handleDragEnd(e));
+        this.choices = document.querySelectorAll('.crossing-choice');
+        if (!this.model) return;
+        this.cut = null;
+        this.choices.forEach(button => button.addEventListener('click', () => {
+            this.cut = Number(button.dataset.cut);
+            this.render();
+        }));
+        this.resetBtn.addEventListener('click', () => {
+            this.cut = null;
+            this.render();
         });
-
-        // 為每個放置區綁定事件
-        dropZones.forEach(zone => {
-            zone.addEventListener('dragover', (e) => this.handleDragOver(e));
-            zone.addEventListener('dragleave', (e) => this.handleDragLeave(e));
-            zone.addEventListener('drop', (e) => this.handleDrop(e));
-        });
+        this.render();
     }
 
-    /**
-     * 處理拖曳開始事件
-     */
-    handleDragStart(e) {
-        e.target.classList.add('dragging');
-        e.dataTransfer.setData('text/plain', e.target.dataset.segment);
-        e.dataTransfer.setData('content', e.target.textContent);
-    }
-
-    /**
-     * 處理拖曳結束事件
-     */
-    handleDragEnd(e) {
-        e.target.classList.remove('dragging');
-    }
-
-    /**
-     * 處理拖曳經過事件
-     */
-    handleDragOver(e) {
-        e.preventDefault();
-        e.target.classList.add('drag-over');
-    }
-
-    /**
-     * 處理拖曳離開事件
-     */
-    handleDragLeave(e) {
-        e.target.classList.remove('drag-over');
-    }
-
-    /**
-     * 處理放置事件
-     */
-    handleDrop(e) {
-        e.preventDefault();
-        e.target.classList.remove('drag-over');
-
-        const draggedSegment = e.dataTransfer.getData('text/plain');
-        const draggedContent = e.dataTransfer.getData('content');
-        const targetSegment = e.target.dataset.segment;
-
-        // 檢查是否為對應的片段
-        if (draggedSegment === targetSegment) {
-            // 執行互換動畫
-            const originalContent = e.target.textContent;
-            e.target.textContent = draggedContent;
-            e.target.classList.add('swapped');
-
-            // 找到對應的藍色片段並更新
-            const blueSegment = this.stage.querySelector(
-                `.chr-blue-drag .chr-segment[data-segment="${targetSegment}"]`
-            );
-            if (blueSegment) {
-                blueSegment.textContent = originalContent;
-                blueSegment.classList.add('swapped');
-                blueSegment.draggable = false;
-            }
-
-            // 移除放置區標記
-            e.target.classList.remove('drop-zone');
-
-            this.swapCount++;
-
-            // 檢查是否完成
-            if (this.swapCount >= this.targetSwaps) {
-                setTimeout(() => this.showResult(), 500);
-            }
-        }
-    }
-
-    /**
-     * 顯示結果
-     */
-    showResult() {
-        this.result.classList.remove('hidden');
-    }
-
-    /**
-     * 綁定重置事件
-     */
-    bindResetEvent() {
-        if (this.resetBtn) {
-            this.resetBtn.addEventListener('click', () => this.reset());
-        }
-    }
-
-    /**
-     * 重置遊戲
-     */
-    reset() {
-        this.swapCount = 0;
-        this.result.classList.add('hidden');
-
-        // 重置藍色染色體
-        const blueSegments = ['A', 'B', 'C', 'D', 'E'];
-        const blueElements = this.stage.querySelectorAll('.chr-blue-drag .chr-segment');
-        blueElements.forEach((el, i) => {
-            el.textContent = blueSegments[i];
-            el.classList.remove('swapped');
-            el.draggable = true;
-        });
-
-        // 重置紅色染色體
-        const redSegments = ['a', 'b', 'c', 'd', 'e'];
-        const redElements = this.stage.querySelectorAll('.chr-red-drag .chr-segment');
-        redElements.forEach((el, i) => {
-            el.textContent = redSegments[i];
-            el.classList.remove('swapped');
-            el.classList.add('drop-zone');
-        });
+    render() {
+        const paternal = ['A', 'B', 'C', 'D', 'E'];
+        const maternal = ['a', 'b', 'c', 'd', 'e'];
+        const rows = [
+            { label: '父源・姊妹 1（未互換）', genes: paternal },
+            { label: '父源・姊妹 2', genes: paternal.map((gene, i) => this.cut !== null && i >= this.cut ? maternal[i] : gene) },
+            { label: '母源・姊妹 1', genes: maternal.map((gene, i) => this.cut !== null && i >= this.cut ? paternal[i] : gene) },
+            { label: '母源・姊妹 2（未互換）', genes: maternal }
+        ];
+        this.model.innerHTML = rows.map(row => `
+            <div class="chromatid-row">
+                <span class="chromatid-label">${row.label}</span>
+                <div class="chromatid-blocks" aria-label="${row.genes.join('、')}">
+                    ${row.genes.map((gene, i) => `<span class="chromatid-block ${gene === gene.toUpperCase() ? 'paternal' : 'maternal'} ${this.cut !== null && (row === rows[1] || row === rows[2]) && i >= this.cut ? 'recombined' : ''}">${gene}</span>`).join('')}
+                </div>
+            </div>`).join('');
+        this.result.classList.toggle('hidden', this.cut === null);
+        this.choices.forEach(button => button.setAttribute('aria-pressed', String(Number(button.dataset.cut) === this.cut)));
     }
 }
 
@@ -1206,8 +1088,19 @@ class FlipCards {
      */
     init() {
         this.cards.forEach(card => {
-            card.addEventListener('click', () => {
+            card.setAttribute('role', 'button');
+            card.setAttribute('tabindex', '0');
+            card.setAttribute('aria-pressed', 'false');
+            const toggle = () => {
                 card.classList.toggle('flipped');
+                card.setAttribute('aria-pressed', String(card.classList.contains('flipped')));
+            };
+            card.addEventListener('click', toggle);
+            card.addEventListener('keydown', event => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    toggle();
+                }
             });
         });
     }
@@ -1238,16 +1131,16 @@ class QuizManager {
         // 題庫
         this.questions = [
             {
-                question: '減數分裂中，染色體數目在哪個階段真正減半？',
+                question: '減數分裂中，同源染色體在哪個階段開始分離？',
                 options: ['前期 I', '後期 I', '中期 II', '後期 II'],
                 correct: 1,
-                explanation: '在後期 I，同源染色體分離移向兩極，使得每個子細胞的染色體數目減半。'
+                explanation: '後期 I 同源染色體開始分離；第一次分裂完成後，每個子細胞只含一套染色體。'
             },
             {
-                question: '減數分裂完成後會產生幾個子細胞？',
+                question: '本動畫示意的兩次細胞質分裂，最後形成幾個單倍體產物？',
                 options: ['1 個', '2 個', '3 個', '4 個'],
                 correct: 3,
-                explanation: '減數分裂經過兩次連續分裂，最終形成 4 個單倍體子細胞。'
+                explanation: '典型減數分裂經過兩次分裂，形成 4 個單倍體產物；卵子形成時通常只有一個成為功能性卵細胞。'
             },
             {
                 question: '「互換」(Crossing Over) 主要發生在哪個時期？',
@@ -1264,22 +1157,22 @@ class QuizManager {
                     '減數分裂只發生在植物細胞'
                 ],
                 correct: 1,
-                explanation: '減數分裂的關鍵特徵是產生單倍體 (n) 子細胞，而有絲分裂產生的子細胞保持雙倍體 (2n)。'
+                explanation: '以本動畫的雙倍體動物細胞為例，減數分裂後產物為單倍體 (n)，有絲分裂則維持雙倍體 (2n)。'
             },
             {
                 question: '減數分裂產生的子細胞會用於什麼目的？',
                 options: ['組織修復', '生長發育', '有性生殖', '無性生殖'],
                 correct: 2,
-                explanation: '減數分裂產生的配子（精子和卵子）用於有性生殖，結合後形成新個體。'
+                explanation: '在動物中，減數分裂參與形成配子，供有性生殖使用；植物通常先產生單倍體孢子。'
             },
             {
                 question: '一個「四分體」(Tetrad) 包含幾條染色分體？',
                 options: ['1 條', '2 條', '3 條', '4 條'],
                 correct: 3,
-                explanation: '四分體是由 2 條同源染色體（每條含 2 個姊妹染色分體）組成，共有 4 條染色分體。'
+                explanation: '四分體由一對同源染色體組成，每條複製後的染色體含兩條姊妹染色分體，合計四條染色分體。'
             },
             {
-                question: '人類精原細胞 (2n=46) 進行減數分裂後，每個精子的染色體數目為？',
+                question: '人類初級精母細胞 (2n=46) 完成減數分裂後，每個精子的染色體數目為？',
                 options: ['46 條', '23 條', '92 條', '12 條'],
                 correct: 1,
                 explanation: '人類體細胞含 46 條染色體 (2n=46)，經減數分裂後產生的配子含 23 條 (n=23)。'
@@ -1581,7 +1474,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初始化減數分裂模擬器
     new MeiosisSimulator();
 
-    // 初始化互換拖放遊戲
+    // 初始化互換體驗
     new CrossingOverGame();
 
     // 初始化翻牌卡片

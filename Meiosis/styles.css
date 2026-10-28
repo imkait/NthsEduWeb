@@ -8,7 +8,7 @@
    4. Hero 區塊樣式
    5. 各 Section 樣式
    6. 動畫模擬器樣式
-   7. 拖放互換體驗樣式
+   7. 染色分體互換模型
    8. 翻牌比較表樣式
    9. 測驗區樣式
    10. 動畫關鍵幀
@@ -729,12 +729,19 @@ body {
 }
 
 .progress-step {
-    width: 10px;
-    height: 10px;
+    width: 16px;
+    height: 16px;
+    border: 0;
+    padding: 0;
     border-radius: 50%;
     background: rgba(255, 255, 255, 0.2);
     cursor: pointer;
     transition: all var(--transition-fast);
+}
+
+.progress-step:focus-visible, .flip-card:focus-visible {
+    outline: 3px solid #facc15;
+    outline-offset: 3px;
 }
 
 .progress-step.active {
@@ -816,183 +823,64 @@ body {
 }
 
 /* ===========================================
-   7. 拖放互換體驗樣式
+   7. 染色分體互換模型
    =========================================== */
-.crossing-over-wrapper {
-    max-width: 900px;
-    margin: 0 auto;
-}
-
-.crossing-over-instructions {
-    padding: 2rem;
-    margin-bottom: 2rem;
-}
-
-.crossing-over-instructions h3 {
-    margin-bottom: 1rem;
-    color: var(--primary-light);
-}
-
-.crossing-over-instructions ol {
-    padding-left: 1.5rem;
+.simulator-model-note {
+    margin: 0 0 1rem;
     color: var(--text-secondary);
+    font-size: 0.9rem;
+    line-height: 1.6;
 }
-
-.crossing-over-instructions li {
-    margin-bottom: 0.75rem;
-}
-
-.chr-tag {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 4px;
-    font-weight: 600;
-}
-
-.chr-tag.blue {
-    background: rgba(59, 130, 246, 0.2);
-    color: var(--chr-blue);
-}
-
-.chr-tag.red {
-    background: rgba(239, 68, 68, 0.2);
-    color: var(--chr-red);
-}
-
-/* 互換舞台 */
+.crossing-over-wrapper { max-width: 900px; margin: 0 auto; }
+.crossing-over-instructions, .crossing-info { padding: 2rem; }
+.crossing-over-instructions { margin-bottom: 2rem; }
+.crossing-over-instructions h3, .crossing-info h3 { color: var(--primary-light); margin-bottom: 1rem; }
+.crossing-over-instructions p, .crossing-info p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 1rem; }
 .crossing-over-stage {
     background: var(--bg-primary);
-    border-radius: 20px;
     border: 1px solid var(--glass-border);
-    padding: 3rem;
+    border-radius: 20px;
+    padding: 2rem;
     margin-bottom: 2rem;
 }
-
-.chr-pair {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 2rem;
-}
-
-.chromosome-drag {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.chr-segment {
-    width: 60px;
-    height: 40px;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 1.2rem;
-    cursor: grab;
-    transition: all var(--transition-fast);
-    user-select: none;
-}
-
-.chr-segment:active {
-    cursor: grabbing;
-}
-
-.chr-blue-drag .chr-segment {
-    background: linear-gradient(135deg, #60a5fa, #2563eb);
-    color: white;
-    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
-}
-
-.chr-red-drag .chr-segment {
-    background: linear-gradient(135deg, #f87171, #dc2626);
-    color: white;
-    box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-}
-
-.chr-segment.drop-zone {
-    border: 2px dashed rgba(255, 255, 255, 0.3);
-}
-
-.chr-segment.drop-zone.drag-over {
-    border-color: var(--primary-color);
-    background: rgba(59, 130, 246, 0.2) !important;
-    transform: scale(1.05);
-}
-
-.chr-segment.swapped {
-    animation: swapPulse 0.5s ease;
-}
-
-.chr-centromere {
-    width: 20px;
-    height: 10px;
-    background: rgba(255, 255, 255, 0.3);
+.chromatid-model { display: grid; gap: 1rem; }
+.chromatid-row { display: grid; grid-template-columns: minmax(120px, 1fr) minmax(0, 3fr); align-items: center; gap: 1rem; }
+.chromatid-label { color: var(--text-secondary); font-size: 0.9rem; }
+.chromatid-blocks { display: flex; min-width: 0; gap: 3px; }
+.chromatid-block {
+    flex: 1;
+    min-width: 0;
+    padding: 0.45rem 0.15rem;
     border-radius: 5px;
-}
-
-/* 互換區域 */
-.crossing-zone {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.zone-label {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    background: var(--glass-bg);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-}
-
-.zone-arrows {
-    display: flex;
-    gap: 1rem;
-    font-size: 1.5rem;
-    color: var(--primary-color);
-    animation: arrowPulse 1.5s ease-in-out infinite;
-}
-
-/* 結果顯示 */
-.crossing-result {
+    color: white;
     text-align: center;
-    padding: 2rem;
-    background: rgba(34, 197, 94, 0.1);
-    border-radius: 15px;
-    margin-top: 2rem;
+    font-weight: 700;
 }
-
-.crossing-result h4 {
-    font-size: 1.5rem;
-    color: var(--success);
-    margin-bottom: 1rem;
-}
-
-.crossing-result p {
-    color: var(--text-secondary);
-    margin-bottom: 1.5rem;
-    line-height: 1.7;
-}
-
-/* 科學小知識 */
-.crossing-info {
-    padding: 2rem;
-}
-
-.crossing-info h3 {
+.chromatid-block.paternal { background: #2563eb; }
+.chromatid-block.maternal { background: #dc2626; }
+.chromatid-block.recombined { outline: 2px solid #facc15; outline-offset: -2px; }
+.crossing-controls { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem; margin-top: 1.5rem; }
+.crossing-choice {
+    border: 1px solid var(--primary-light);
+    border-radius: 10px;
+    background: rgba(59, 130, 246, 0.15);
     color: var(--primary-light);
-    margin-bottom: 1rem;
+    padding: 0.7rem 1rem;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
 }
-
-.crossing-info p {
-    color: var(--text-secondary);
-    line-height: 1.7;
-    margin-bottom: 1rem;
+.crossing-choice:hover, .crossing-choice:focus-visible { background: rgba(59, 130, 246, 0.3); }
+.crossing-choice:focus-visible { outline: 3px solid #facc15; outline-offset: 3px; }
+.crossing-result {
+    margin-top: 2rem;
+    padding: 1.5rem;
+    border-radius: 15px;
+    background: rgba(34, 197, 94, 0.1);
+    text-align: center;
 }
+.crossing-result h4 { color: var(--success); margin-bottom: 1rem; }
+.crossing-result p { color: var(--text-secondary); line-height: 1.7; margin-bottom: 1.5rem; }
 
 /* ===========================================
    8. 翻牌比較表樣式
@@ -1351,32 +1239,6 @@ footer {
     }
 }
 
-@keyframes swapPulse {
-    0% {
-        transform: scale(1);
-    }
-
-    50% {
-        transform: scale(1.15);
-    }
-
-    100% {
-        transform: scale(1);
-    }
-}
-
-@keyframes arrowPulse {
-
-    0%,
-    100% {
-        opacity: 0.5;
-    }
-
-    50% {
-        opacity: 1;
-    }
-}
-
 /* Reveal 動畫 */
 .reveal {
     opacity: 0;
@@ -1473,19 +1335,6 @@ footer {
         width: 100%;
     }
 
-    .chr-pair {
-        flex-direction: column;
-        gap: 1rem;
-    }
-
-    .crossing-zone {
-        margin: 1rem 0;
-    }
-
-    .zone-arrows {
-        flex-direction: column;
-    }
-
     .comparison-grid {
         grid-template-columns: 1fr;
     }
@@ -1508,9 +1357,6 @@ footer {
         padding: 1.5rem;
     }
 
-    .chr-segment {
-        width: 50px;
-        height: 35px;
-        font-size: 1rem;
-    }
+    .chromatid-row { grid-template-columns: 1fr; gap: 0.3rem; }
+    .crossing-over-stage { padding: 1rem; }
 }

@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>探索減數分裂 (Meiosis) | 互動式生物教學</title>
-    <meta name="description" content="透過動畫模擬、互動拖放與遊戲化測驗，深入理解減數分裂的完整過程。這是一個專為學生設計的互動式教學網頁。">
+    <meta name="description" content="透過動畫模擬、互換操作與互動測驗，深入理解減數分裂的完整過程。這是一個專為學生設計的互動式教學網頁。">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -135,7 +135,7 @@
                     <div class="intro-card glass-card">
                         <div class="card-icon">🧪</div>
                         <h3>定義</h3>
-                        <p>減數分裂 (Meiosis) 是一種特殊的細胞分裂方式，主要發生在有性生殖的生物體內，目的是產生<strong>配子</strong>（精子與卵子）。</p>
+                        <p>減數分裂 (Meiosis) 透過一次 DNA 複製與兩次分裂，產生單倍體細胞。在動物中，這是形成精子與卵子的過程；植物的減數分裂則先產生孢子。</p>
                     </div>
                     <div class="intro-card glass-card">
                         <div class="card-icon">📉</div>
@@ -172,8 +172,8 @@
                         <div class="timeline-item">
                             <div class="timeline-marker">✓</div>
                             <div class="timeline-content">
-                                <h4>形成配子</h4>
-                                <p>4個單倍體子細胞</p>
+                                <h4>形成單倍體細胞</h4>
+                                <p>4 個單倍體產物（動物細胞示意）</p>
                             </div>
                         </div>
                     </div>
@@ -187,11 +187,12 @@
                 <div class="section-header reveal">
                     <span class="section-tag">🎬 互動動畫</span>
                     <h2>減數分裂模擬器</h2>
-                    <p class="section-subtitle">逐步觀察完整的分裂過程</p>
+                    <p class="section-subtitle">以 2n=4 的動物細胞為例，逐步觀察染色體如何分配</p>
                 </div>
 
                 <div class="simulator-wrapper reveal">
                     <div class="simulator-stage" id="simulator-stage">
+                        <p class="simulator-model-note">圖解固定呈現一種染色體排列，未繪出互換；因此圖中的四個產物不代表所有可能組合。下方可操作互換模型。</p>
                         <!-- 動態產生的 SVG 動畫區域 -->
                         <svg id="meiosis-svg" viewBox="0 0 800 500">
                             <!-- 細胞膜 -->
@@ -214,11 +215,11 @@
                             <!-- 固定圖例說明（始終顯示於橢圓下方） -->
                             <g id="legend-bar" text-anchor="middle">
                                 <text x="400" y="475" font-size="11">
-                                    <tspan fill="#22c55e" font-weight="600">N</tspan>
-                                    <tspan fill="#9ca3af">：染色體倍數</tspan>
+                                    <tspan fill="#22c55e" font-weight="600">n</tspan>
+                                    <tspan fill="#9ca3af">：一套染色體（本圖 n=2）</tspan>
                                     <tspan fill="#9ca3af" dx="12">｜</tspan>
-                                    <tspan fill="#22d3ee" font-weight="600">a</tspan>
-                                    <tspan fill="#9ca3af">：DNA 含量</tspan>
+                                    <tspan fill="#22d3ee" font-weight="600">C</tspan>
+                                    <tspan fill="#9ca3af">：未複製單倍體 DNA 量</tspan>
                                     <tspan fill="#9ca3af" dx="12">｜</tspan>
                                     <tspan fill="#60a5fa" font-weight="600">●</tspan>
                                     <tspan fill="#60a5fa"> 藍色：父源</tspan>
@@ -312,7 +313,7 @@
                         <p id="info-description">細胞在進行減數分裂前，DNA 會先進行複製，形成由兩條姊妹染色分體組成的染色體。</p>
                         <div class="info-highlights" id="info-highlights">
                             <span class="highlight-tag">DNA 複製</span>
-                            <span class="highlight-tag">染色體形成</span>
+                            <span class="highlight-tag">DNA 含量加倍，染色體條數不變</span>
                         </div>
                     </div>
                 </div>
@@ -323,67 +324,34 @@
         <section id="crossing-over" class="section">
             <div class="container">
                 <div class="section-header reveal">
-                    <span class="section-tag">🎮 拖放體驗</span>
+                    <span class="section-tag">🎮 互換體驗</span>
                     <h2>染色體互換 (Crossing Over)</h2>
-                    <p class="section-subtitle">拖曳染色體片段，體驗基因重組的過程</p>
+                    <p class="section-subtitle">選擇交叉位置，觀察非姊妹染色分體的相互片段交換</p>
                 </div>
 
                 <div class="crossing-over-wrapper reveal">
                     <div class="crossing-over-instructions glass-card">
                         <h3>🎯 操作說明</h3>
-                        <ol>
-                            <li>將 <span class="chr-tag blue">藍色染色體</span> 的片段拖曳到 <span class="chr-tag red">紅色染色體</span>
-                                的對應位置</li>
-                            <li>觀察基因片段如何互換</li>
-                            <li>完成後查看重組結果</li>
-                        </ol>
+                        <p>一對同源染色體複製後共有四條染色分體。字母代表染色體上對應的 DNA 位置；點選交叉位置，觀察<strong>非姊妹染色分體</strong>如何相互交換交叉點以外的對應片段。</p>
                     </div>
 
                     <div class="crossing-over-stage" id="crossing-over-stage">
-                        <div class="chr-pair">
-                            <!-- 藍色染色體 -->
-                            <div class="chromosome-drag chr-blue-drag" id="chr-blue-left">
-                                <div class="chr-segment" data-segment="1" draggable="true">A</div>
-                                <div class="chr-segment" data-segment="2" draggable="true">B</div>
-                                <div class="chr-segment" data-segment="3" draggable="true">C</div>
-                                <div class="chr-centromere"></div>
-                                <div class="chr-segment" data-segment="4" draggable="true">D</div>
-                                <div class="chr-segment" data-segment="5" draggable="true">E</div>
-                            </div>
-
-                            <!-- 互換區域指示 -->
-                            <div class="crossing-zone">
-                                <div class="zone-label">互換區</div>
-                                <div class="zone-arrows">
-                                    <span>⟵</span>
-                                    <span>⟶</span>
-                                </div>
-                            </div>
-
-                            <!-- 紅色染色體 -->
-                            <div class="chromosome-drag chr-red-drag" id="chr-red-right">
-                                <div class="chr-segment drop-zone" data-segment="1">a</div>
-                                <div class="chr-segment drop-zone" data-segment="2">b</div>
-                                <div class="chr-segment drop-zone" data-segment="3">c</div>
-                                <div class="chr-centromere"></div>
-                                <div class="chr-segment drop-zone" data-segment="4">d</div>
-                                <div class="chr-segment drop-zone" data-segment="5">e</div>
-                            </div>
+                        <div class="chromatid-model" id="chromatid-model" aria-live="polite"></div>
+                        <div class="crossing-controls" role="group" aria-label="選擇交叉位置">
+                            <button type="button" class="crossing-choice" data-cut="2">在 B／C 之間互換</button>
+                            <button type="button" class="crossing-choice" data-cut="3">在 C／D 之間互換</button>
                         </div>
-
-                        <!-- 結果顯示區 -->
-                        <div class="crossing-result hidden" id="crossing-result">
-                            <h4>🎉 互換完成！</h4>
-                            <p>透過互換，原本在同一條染色體上的基因組合被打散，產生了新的基因組合。這就是為什麼即使親代相同，後代的性狀仍有差異！</p>
-                            <button class="btn-secondary" id="btn-reset-crossing">重新體驗</button>
+                        <div class="crossing-result hidden" id="crossing-result" aria-live="polite">
+                            <h4>互換完成</h4>
+                            <p>中間兩條非姊妹染色分體相互交換末端片段，外側兩條保持原樣；同源染色體上的基因位置仍一一對應。</p>
+                            <button type="button" class="btn-secondary" id="btn-reset-crossing">重新體驗</button>
                         </div>
                     </div>
 
                     <div class="crossing-info glass-card">
                         <h3>💡 科學小知識</h3>
-                        <p>互換發生在減數分裂 I 的<strong>前期 I</strong>，當同源染色體緊密配對形成<strong>聯會複合體</strong>時，非姊妹染色分體會在交叉點 (Chiasma)
-                            互換片段。</p>
-                        <p>每次減數分裂平均會發生 <span class="highlight">2-3 次</span> 互換，大幅增加子代的遺傳變異！</p>
+                        <p>互換發生在減數分裂 I 的<strong>前期 I</strong>，同源染色體配對形成<strong>聯會複合體</strong>時，非姊妹染色分體交換對應片段；交叉點 (Chiasma) 可顯示互換發生的位置。</p>
+                        <p>互換次數會隨物種與染色體而異；此模型只展示<strong>一次互換</strong>，方便觀察重組結果。</p>
                     </div>
                 </div>
             </div>
@@ -395,7 +363,7 @@
                 <div class="section-header reveal">
                     <span class="section-tag">⚖️ 深度比較</span>
                     <h2>有絲分裂 vs 減數分裂</h2>
-                    <p class="section-subtitle">點擊卡片翻轉查看詳細比較</p>
+                    <p class="section-subtitle">以雙倍體動物細胞為例；點擊或按 Enter／空白鍵翻轉卡片</p>
                 </div>
 
                 <div class="comparison-grid reveal">
@@ -536,7 +504,7 @@
                                     <div class="compare-divider">vs</div>
                                     <div class="compare-item meiosis">
                                         <span class="compare-label">減數分裂</span>
-                                        <span class="compare-value">精細胞、卵細胞(精巢 / 卵巢)</span>
+                                        <span class="compare-value">生殖細胞系（動物的精巢／卵巢）</span>
                                     </div>
                                 </div>
                             </div>
