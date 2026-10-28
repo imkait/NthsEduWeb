@@ -1,58 +1,102 @@
 <!doctype html>
 <html lang="zh-Hant-TW">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>基礎向量互動教學</title>
-  <!-- Tailwind CDN for quick, clean educational styling -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f5f3eb">
+  <title>向量實驗室｜高中數學互動教材</title>
   <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
 </head>
-<body class="bg-gray-50 text-slate-900 antialiased">
-  <div class="max-w-6xl mx-auto p-4">
-    <header class="mb-4">
-      <h1 class="text-2xl font-semibold">基礎向量互動教學</h1>
-      <p class="text-sm text-slate-600">透過拖曳與視覺化理解向量的幾何意義與運算</p>
+<body>
+  <div class="site-shell">
+    <header class="site-header">
+      <a class="back-link" href="../index.html">← 返回教材首頁</a>
+      <span class="eyebrow">高中數學 · 互動探索</span>
     </header>
 
-    <!-- Tabs -->
-    <nav class="tabs flex gap-2 mb-4">
-      <button class="tab px-4 py-2 rounded-md bg-white shadow-sm active" data-unit="1">單元一：向量與成分</button>
-      <button class="tab px-4 py-2 rounded-md bg-white shadow-sm" data-unit="2">單元二：加減法</button>
-      <button class="tab px-4 py-2 rounded-md bg-white shadow-sm" data-unit="3">單元三：內積</button>
+    <section class="intro" aria-labelledby="page-title">
+      <div>
+        <p class="section-kicker">VECTOR LAB / 01—03</p>
+        <h1 id="page-title">向量實驗室<span class="title-mark">↗</span></h1>
+        <p class="intro-copy">從座標、加減法到內積，移動箭頭，讓算式與圖形一起說話。</p>
+      </div>
+      <div class="intro-note" aria-hidden="true"><span>看見方向</span><strong>看懂運算</strong></div>
+    </section>
+
+    <nav class="unit-nav" aria-label="向量教學單元">
+      <button type="button" class="unit-tab active" data-unit="1" aria-current="step"><span>01</span> 向量與成分</button>
+      <button type="button" class="unit-tab" data-unit="2"><span>02</span> 加法與減法</button>
+      <button type="button" class="unit-tab" data-unit="3"><span>03</span> 內積與夾角</button>
     </nav>
 
-    <main class="grid lg:grid-cols-3 gap-4">
-      <!-- Left: Controls / Panel -->
-      <aside id="panel" class="col-span-1 bg-white p-4 rounded-lg shadow-sm">
-        <section id="unit-title" class="mb-3">
-          <h2 class="text-lg font-medium">單元一：認識向量與成分</h2>
-          <p class="text-sm text-slate-600 mt-1">拖曳箭頭終點即可改變向量。</p>
-        </section>
-
-        <section id="unit-controls" class="space-y-3">
-          <!-- Unit-specific controls inserted by JS -->
-        </section>
-
-        <section class="mt-4 bg-slate-50 p-3 rounded">
-          <div id="values" class="text-lg font-mono">
-            <!-- live values -->
-          </div>
-        </section>
-      </aside>
-
-      <!-- Right: Canvas interactive area (spans two columns on large screens) -->
-      <div class="col-span-2 bg-white rounded-lg shadow-sm p-2">
-        <div class="canvas-wrap relative">
-          <canvas id="gridCanvas" class="w-full h-[520px] rounded"></canvas>
-          <div id="helpOverlay" class="absolute top-2 left-2 text-xs text-slate-600 bg-white/70 px-2 py-1 rounded">拖曳箭頭端點即可互動（支援滑鼠與觸控）</div>
+    <main class="workspace">
+      <section class="lesson-card" aria-labelledby="lesson-title">
+        <div class="lesson-heading">
+          <p class="section-kicker" id="lesson-number">LESSON 01</p>
+          <h2 id="lesson-title">向量與成分</h2>
+          <p id="lesson-description">箭頭的方向與長度描述一個向量；水平與垂直位移就是它的兩個成分。</p>
         </div>
-      </div>
+
+        <div id="controls-one" class="unit-controls">
+          <p class="control-caption">設定向量 <strong class="color-a">v</strong> 的終點</p>
+          <div class="coordinate-fields" data-vector="v">
+            <label>x <input type="number" data-axis="x" min="-8" max="8" step="1" inputmode="numeric" value="4"></label>
+            <label>y <input type="number" data-axis="y" min="-8" max="8" step="1" inputmode="numeric" value="3"></label>
+          </div>
+          <div class="preset-row" aria-label="向量範例">
+            <button type="button" class="preset" data-preset="v:4,3">第一象限</button>
+            <button type="button" class="preset" data-preset="v:-4,3">第二象限</button>
+            <button type="button" class="preset" data-preset="v:0,0">零向量</button>
+          </div>
+        </div>
+
+        <div id="controls-two" class="unit-controls" hidden>
+          <p class="control-caption">切換運算</p>
+          <div class="segmented" role="group" aria-label="向量運算">
+            <button type="button" class="mode-button active" data-operation="add" aria-pressed="true">a + b</button>
+            <button type="button" class="mode-button" data-operation="subtract" aria-pressed="false">a − b</button>
+          </div>
+          <div class="vector-fields">
+            <div><p class="control-caption"><strong class="color-a">a</strong> 的終點</p><div class="coordinate-fields" data-vector="a"><label>x <input type="number" data-axis="x" min="-8" max="8" step="1" inputmode="numeric" value="4"></label><label>y <input type="number" data-axis="y" min="-8" max="8" step="1" inputmode="numeric" value="1"></label></div></div>
+            <div><p class="control-caption"><strong class="color-b">b</strong> 的終點</p><div class="coordinate-fields" data-vector="b"><label>x <input type="number" data-axis="x" min="-8" max="8" step="1" inputmode="numeric" value="2"></label><label>y <input type="number" data-axis="y" min="-8" max="8" step="1" inputmode="numeric" value="3"></label></div></div>
+          </div>
+          <p class="mini-hint" id="operation-hint">把 b 平移到 a 的終點，紅色箭頭就是 a + b。</p>
+        </div>
+
+        <div id="controls-three" class="unit-controls" hidden>
+          <p class="control-caption"><strong class="color-a">a = (6, 0)</strong> 固定向右；調整 <strong class="color-b">b</strong></p>
+          <div class="coordinate-fields" data-vector="dotB">
+            <label>x <input type="number" data-axis="x" min="-8" max="8" step="1" inputmode="numeric" value="3"></label>
+            <label>y <input type="number" data-axis="y" min="-8" max="8" step="1" inputmode="numeric" value="4"></label>
+          </div>
+          <div class="preset-row" aria-label="夾角範例">
+            <button type="button" class="preset" data-preset="dotB:3,4">銳角</button>
+            <button type="button" class="preset" data-preset="dotB:0,4">直角</button>
+            <button type="button" class="preset" data-preset="dotB:-3,4">鈍角</button>
+          </div>
+        </div>
+
+        <div class="result-card" aria-live="polite" aria-atomic="true">
+          <p class="result-label">即時讀值 <span>LIVE RESULT</span></p>
+          <div id="values"></div>
+        </div>
+        <div class="insight-card">
+          <p class="result-label">觀察重點</p>
+          <p id="insight"></p>
+        </div>
+      </section>
+
+      <section class="graph-card" aria-label="可互動的向量座標圖">
+        <div class="graph-heading"><div><span class="graph-status"></span> 互動座標平面</div><span>每格 = 1 單位</span></div>
+        <div class="canvas-wrap"><canvas id="gridCanvas" aria-label="向量座標圖，可拖曳彩色箭頭的端點" role="img"></canvas></div>
+        <div class="graph-footer"><span>拖曳彩色端點，或在左側輸入座標</span><div class="legend"><span><i class="dot a"></i> a / v</span><span><i class="dot b"></i> b</span><span><i class="dot result"></i> 運算結果</span></div></div>
+      </section>
     </main>
 
-    <footer class="mt-6 text-xs text-slate-500">適合高中職學生。開源並可部署於 GitHub Pages。</footer>
+    <section class="concept-strip" aria-label="學習順序">
+      <span>學習路徑</span><p>① 看座標與長度 <b>→</b> ② 比較向量運算 <b>→</b> ③ 觀察夾角與內積</p>
+    </section>
   </div>
-
-  <script src="script.js"></script>
 </body>
 </html>

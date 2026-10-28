@@ -15,6 +15,7 @@
     --physics-color: #f78c6b;
     --chemistry-color: #06d6a0;
     --biology-color: #118ab2;
+    --earth-science-color: #4472a0;
     --cs-color: #073b4c;
 }
 
@@ -216,6 +217,10 @@ body {
     background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
 }
 
+.earth-science-icon {
+    background: linear-gradient(135deg, #4d95b8 0%, #476197 100%);
+}
+
 .cs-icon {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
@@ -335,6 +340,12 @@ body {
     right: -50px;
 }
 
+.earth-science-bg {
+    background: var(--earth-science-color);
+    top: -50px;
+    right: -50px;
+}
+
 .cs-bg {
     background: var(--cs-color);
     top: -50px;
@@ -368,6 +379,13 @@ body {
 .course-card p {
     font-size: 0.9rem;
     color: var(--text-muted);
+}
+
+.course-card .card-author {
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--text-main);
 }
 
 .card-footer {
