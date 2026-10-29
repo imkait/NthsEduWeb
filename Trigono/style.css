@@ -12,11 +12,11 @@
     /* Sky 400 */
 
     /* Function Colors */
-    --color-sin: #ef4444;
+    --color-sin: #f87171;
     /* Red 500 */
-    --color-cos: #3b82f6;
+    --color-cos: #60a5fa;
     /* Blue 500 */
-    --color-tan: #10b981;
+    --color-tan: #34d399;
     /* Emerald 500 */
     --color-cot: #ec4899;
     /* Pink 500 */
@@ -89,7 +89,7 @@ body {
 .main-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: 550px 1fr;
+    grid-template-columns: minmax(320px, .85fr) minmax(0, 1.6fr);
     /* Fixed sidebar, flexible content */
     gap: 20px;
     min-height: 0;
@@ -135,6 +135,7 @@ body {
 /* Info Panel Styles */
 .info-panel {
     overflow-y: auto;
+    align-self: start;
     /* Info panel naturally stretches in Grid */
 }
 
@@ -294,54 +295,13 @@ body {
     color: var(--color-angle);
 }
 
-.color-sin {
-    color: var(--color-sin);
-    font-weight: 600;
-}
-
-.color-cos {
-    color: var(--color-cos);
-    font-weight: 600;
-}
-
-.color-tan {
-    color: var(--color-tan);
-    font-weight: 600;
-}
-
-/* Controls */
-.controls-group h3 {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    margin-bottom: 15px;
-}
-
-.toggle-control {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    user-select: none;
-}
-
-.toggle-control input {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--accent-primary);
-}
-
-.toggle-label {
-    font-size: 0.95rem;
-}
-
 /* Visualization Row (Circle + Controls) */
 .visualization-row {
     display: flex;
     gap: 20px;
     min-height: 0;
-    /* 限制圓形面板的最大高度，讓波形面板能在畫面上顯示 */
-    max-height: 350px;
+    /* 由內容決定列高，避免控制面板與下方圖表重疊 */
+    max-height: none;
 }
 
 /* Visualization Panel - takes remaining space in row */
@@ -355,16 +315,18 @@ body {
     justify-content: center;
     align-items: center;
     flex: 1;
-    min-height: 280px;
-    max-height: 350px;
+    min-height: 400px;
+    height: 400px;
+    align-self: flex-start;
+    max-height: none;
 }
 
 /* New Controls Panel */
 .controls-panel {
-    width: 200px;
+    width: 240px;
     /* Fixed width for controls */
     flex-shrink: 0;
-    overflow-y: auto;
+    overflow: visible;
 }
 
 .canvas-container {
@@ -395,8 +357,8 @@ canvas {
 
 /* Graph Panel (Bottom, now inside right column) */
 .graph-panel {
-    /* 增加高度以完整顯示 tan 曲線 */
-    height: 250px;
+    /* 圖表與說明採自然高度 */
+    height: auto;
     flex-shrink: 0;
 }
 
@@ -489,60 +451,35 @@ canvas {
     margin-bottom: 4px;
 }
 
-/* 響應式設計 - 公式面板 */
-@media (max-width: 1200px) {
-    .formula-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
+/* Angle controls and readable identities */
+.right-column, .panel { min-width: 0; }
+.identity-row { color: var(--text-secondary); font-size: .85rem; margin-top: 10px; line-height: 1.7; }
+.angle-controls { margin-bottom: 22px; }
+.angle-controls h3 { font-size: 1rem; margin-bottom: 10px; }
+.angle-controls label, .control-note, .graph-note, .formula-note { color: var(--text-secondary); font-size: .85rem; }
+.angle-controls input[type="number"] { width: 100%; margin: 6px 0 10px; min-height: 42px; padding: 8px 10px; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-main); color: var(--text-primary); font: inherit; }
+.angle-controls input[type="range"] { width: 100%; accent-color: var(--accent-primary); min-height: 28px; }
+.angle-presets { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 10px 0; }
+.angle-presets button, #reset-angle { min-height: 40px; border: 1px solid var(--border-color); border-radius: 7px; background: var(--bg-main); color: var(--text-primary); font: inherit; font-size: .85rem; cursor: pointer; }
+.angle-presets button:hover, #reset-angle:hover { background: #0c4a6e; border-color: var(--accent-primary); }
+#reset-angle { width: 100%; margin-bottom: 8px; }
+input:focus-visible, button:focus-visible, canvas:focus-visible, a:focus-visible { outline: 3px solid var(--accent-primary); outline-offset: 3px; }
+#unit-circle-canvas { touch-action: none; cursor: crosshair; }
+#unit-circle-canvas:active { cursor: grabbing; }
+.graph-note { margin-bottom: 12px; }
+.graph-panel .wide { height: 280px; flex: none; }
+.formula-note { margin-bottom: 14px; }
+.overlay-instruction { white-space: nowrap; padding: 6px 12px; bottom: 10px; font-size: .75rem; }
+@media (max-width: 1150px) {
+    .main-grid { grid-template-columns: minmax(0, 1fr); }
+    .right-column { height: auto; }
+    .value-group { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 15px; }
+    .info-panel { overflow: visible; }
+    .visualization-row { height: auto; max-height: none; align-items: flex-start; }
+    .formula-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
-
-@media (max-width: 900px) {
-    body {
-        height: auto;
-        overflow-y: auto;
-    }
-
-    .app-container {
-        height: auto;
-    }
-
-    .main-grid {
-        grid-template-columns: 1fr;
-        grid-template-rows: auto auto;
-        /* Info then Content */
-    }
-
-    .right-column {
-        height: auto;
-        gap: 20px;
-    }
-
-    .visualization-row {
-        flex-direction: column;
-        height: auto;
-    }
-
-    .controls-panel {
-        width: 100%;
-        /* Full width on mobile */
-        height: auto;
-    }
-
-    .visualization-panel {
-        height: 400px;
-        /* Fixed height on mobile */
-        flex: none;
-    }
-
-    .graph-panel {
-        height: 280px;
-    }
-
-    .formula-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .formula-panel {
-        margin-top: 10px;
-    }
+@media (max-width: 700px) {
+    .visualization-row { flex-direction: column; }
+    .visualization-panel, .controls-panel { width: 100%; flex: none; }
+    .value-group, .formula-grid { grid-template-columns: minmax(0, 1fr); }
 }

@@ -32,57 +32,35 @@
                 </div>
                 <div class="value-group">
                     <div class="value-item">
-                        <span class="label">角度 Angle (θ)</span>
-                        <div class="value-display">
-                            <span id="angle-deg">0°</span>
-                            <span class="divider">|</span>
-                            <span id="angle-rad">0π</span>
-                        </div>
+                        <span class="label">角度 θ（度數 ／ 弧度）</span>
+                        <div class="value-display"><span id="angle-deg">0°</span><span class="divider">|</span><span id="angle-rad">0</span></div>
                     </div>
-
                     <div class="value-item">
                         <div class="value-display math-font func-row">
-                            <span class="func-label highlight-sin">SIN</span>
-                            <span class="func-angle current-angle">0°</span>
-                            <span class="func-eq">=</span>
-                            <span id="val-sin">0</span>
-                            <span class="func-eq">=</span>
-                            <span class="func-identity" id="identity-sin">SIN(180°-0°)</span>
-                            <span class="func-eq">=</span>
-                            <span class="func-identity" id="identity-sin-co">COS(90°-0°)</span>
+                            <span class="func-label highlight-sin">sin</span><span class="current-angle">0°</span>
+                            <span class="func-eq" id="eq-sin">=</span><span id="val-sin">0</span>
                         </div>
+                        <div class="identity-row" id="identity-sin"></div>
                     </div>
-
                     <div class="value-item">
                         <div class="value-display math-font func-row">
-                            <span class="func-label highlight-cos">COS</span>
-                            <span class="func-angle current-angle">0°</span>
-                            <span class="func-eq">=</span>
-                            <span id="val-cos">1</span>
-                            <span class="func-eq">=</span>
-                            <span class="func-identity" id="identity-cos">COS(360°-0°)</span>
-                            <span class="func-eq">=</span>
-                            <span class="func-identity" id="identity-cos-co">SIN(90°-0°)</span>
+                            <span class="func-label highlight-cos">cos</span><span class="current-angle">0°</span>
+                            <span class="func-eq" id="eq-cos">=</span><span id="val-cos">1</span>
                         </div>
+                        <div class="identity-row" id="identity-cos"></div>
                     </div>
-
                     <div class="value-item">
                         <div class="value-display math-font func-row">
-                            <span class="func-label highlight-tan">TAN</span>
-                            <span class="func-angle current-angle">0°</span>
-                            <span class="func-eq">=</span>
-                            <span id="val-tan">0</span>
-                            <span class="func-eq">=</span>
-                            <span class="func-identity" id="identity-tan">TAN(180°+0°)</span>
-                            <span class="func-eq">=</span>
-                            <span class="func-identity" id="identity-tan-co">COT(90°-0°)</span>
+                            <span class="func-label highlight-tan">tan</span><span class="current-angle">0°</span>
+                            <span class="func-eq" id="eq-tan">=</span><span id="val-tan">0</span>
                         </div>
+                        <div class="identity-row" id="identity-tan"></div>
                     </div>
                 </div>
-
                 <div class="info-note">
-                    <p>當角度為 180°±θ 或 360°±θ 時，函數不需轉換</p>
-                    <p>當角度為 90°±θ 或 270°±θ 時，則函數需轉換</p>
+                    <p>單位圓上的點 P = (cos θ, sin θ)，座標帶有正負號。</p>
+                    <p>綠色正切段固定在 x = 1，端點高度為 tan θ；虛線表示半徑所在直線的延長。</p>
+                    <p>cos θ = 0 時 tan θ 未定義；線段超出畫面時以箭頭標示。</p>
                 </div>
             </section>
 
@@ -93,42 +71,37 @@
                     <!-- Unit Circle Interaction -->
                     <section class="panel visualization-panel">
                         <div class="canvas-container" id="unit-circle-container">
-                            <canvas id="unit-circle-canvas"></canvas>
-                            <div class="overlay-instruction">拖曳紅點改變角度</div>
+                            <canvas id="unit-circle-canvas" tabindex="0" role="slider" aria-label="單位圓角度，方向鍵調整一度，Shift 加方向鍵調整十五度" aria-valuemin="0" aria-valuemax="360" aria-valuenow="0">可使用下方的角度輸入與滑桿調整角度。</canvas>
+                            <div class="overlay-instruction">拖曳調角度 · 方向鍵 ±1°</div>
                         </div>
                     </section>
 
                     <!-- New Right Panel: Controls -->
                     <section class="panel controls-panel">
-                        <div class="controls-group">
-                            <h3>顯示設定</h3>
-                            <label class="toggle-control">
-                                <input type="checkbox" id="show-sin" checked>
-                                <span class="toggle-track"></span>
-                                <span class="toggle-label color-sin">Sin (正弦)</span>
-                            </label>
-                            <label class="toggle-control">
-                                <input type="checkbox" id="show-cos" checked>
-                                <span class="toggle-track"></span>
-                                <span class="toggle-label color-cos">Cos (餘弦)</span>
-                            </label>
-                            <label class="toggle-control">
-                                <input type="checkbox" id="show-tan" checked>
-                                <span class="toggle-track"></span>
-                                <span class="toggle-label color-tan">Tan (正切)</span>
-                            </label>
-                            <hr>
-                            <label class="toggle-control">
-                                <input type="checkbox" id="snap-grid" checked>
-                                <span class="toggle-track"></span>
-                                <span class="toggle-label">吸附特殊角 (Special Angles)</span>
-                            </label>
+                        <div class="angle-controls">
+                            <h3>調整角度</h3>
+                            <label for="angle-input">角度 θ（0–360°）</label>
+                            <input id="angle-input" type="number" min="0" max="360" step="0.01" value="0">
+                            <input id="angle-slider" type="range" min="0" max="360" step="0.01" value="0" aria-label="角度 θ">
+                            <div class="angle-presets" aria-label="常用角度">
+                                <button type="button" data-angle="0">0°</button>
+                                <button type="button" data-angle="30">30°</button>
+                                <button type="button" data-angle="45">45°</button>
+                                <button type="button" data-angle="60">60°</button>
+                                <button type="button" data-angle="90">90°</button>
+                                <button type="button" data-angle="180">180°</button>
+                                <button type="button" data-angle="270">270°</button>
+                                <button type="button" data-angle="360">360°</button>
+                            </div>
+                            <button type="button" id="reset-angle">重置為 0°</button>
                         </div>
                     </section>
                 </div>
 
                 <!-- Bottom: Function Graphs -->
                 <section class="panel graph-panel">
+                    <div class="panel-header"><h2>函數圖：0°–360°（0–2π）</h2></div>
+                    <p class="graph-note">三條曲線共用相同比例，縱軸顯示 −2 至 2；tan 超出範圍的部分未畫出，綠色虛線是漸近線。</p>
                     <div class="canvas-container wide" id="wave-graph-container">
                         <canvas id="wave-graph-canvas"></canvas>
                     </div>
@@ -140,6 +113,7 @@
                 <div class="panel-header">
                     <h2>常用三角函數公式</h2>
                 </div>
+                <p class="formula-note">各式只在兩側函數都有定義時成立；分母不可為 0。三角形中 a、b、c 分別對應角 A、B、C，R 為外接圓半徑。</p>
                 <div class="formula-grid">
                     <!-- 六邊形記憶法 Hexagon Mnemonic -->
                     <div class="formula-group hexagon-group">
@@ -194,6 +168,7 @@
                     <!-- 基本定義 -->
                     <div class="formula-group">
                         <h3>基本定義</h3>
+                        <p class="formula-note">以下邊長比適用於直角三角形的銳角 θ。一般角使用單位圓：cos θ = x、sin θ = y，tan θ = y/x（x ≠ 0）。</p>
                         <div class="formula"><span class="highlight-sin">sin</span> <span
                                 class="highlight-angle">θ</span> = <span class="frac"><span class="num">對邊</span><span
                                     class="den">斜邊</span></span></div>
