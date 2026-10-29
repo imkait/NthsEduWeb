@@ -1,6 +1,10 @@
 document.addEventListener('DOMContentLoaded', () => {
     // Elements
     const startBtn = document.getElementById('startBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const playMode = document.getElementById('playMode');
+    const modeHint = document.getElementById('modeHint');
+    const stepStatus = document.getElementById('stepStatus');
     const resetBtn = document.getElementById('resetBtn');
     const messageInput = document.getElementById('messageInput');
     const speedRange = document.getElementById('speedRange');
@@ -10,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const explanationText = document.getElementById('explanationText');
     const finalMessage = document.getElementById('finalMessage');
     const router = document.querySelector('.router');
+    const hopDetails = document.getElementById('hopDetails');
 
     // Separate steps for Sender and Receiver
     const senderSteps = {
@@ -35,9 +40,21 @@ document.addEventListener('DOMContentLoaded', () => {
     let isAnimating = false;
     let isPaused = false;
     let shouldReset = false;  // 用於中斷動畫
-    let animationSpeed = 1000;
-    let pauseResolve = null;  // 暫停時的 Promise resolver
+    let animationSpeed = 2400 - Number(speedRange.value) * 400;
+    let explanationBeforePause = '';
     let activeAnimationToken = 0;
+    let manualMode = false;
+    let nextResolve = null;
+    let stepNumber = 0;
+    let packetPosition = 20;
+
+    function positionPacket(position) {
+        packetPosition = position;
+        const vertical = window.matchMedia('(max-width: 1300px)').matches;
+        flyingPacket.style.left = vertical ? '50%' : `${position}%`;
+        flyingPacket.style.top = vertical ? `${position}%` : '50%';
+    }
+    window.addEventListener('resize', () => positionPacket(packetPosition));
 
     // Config
     const texts = {
@@ -49,11 +66,11 @@ document.addEventListener('DOMContentLoaded', () => {
             trans: "4. 傳輸層 (Transport)：切割資料，加入 TCP/UDP 標頭 (Port)。",
             net: "3. 網路層 (Network)：邏輯定址與路徑選擇，加入 IP 標頭。",
             link: "2. 資料連結層 (Data Link)：實體定址 (MAC)，加入訊框標頭。",
-            phy: "1. 實體層 (Physical)：將資料轉為電子訊號傳輸。"
+            phy: "1. 實體層 (Physical)：將位元轉為電、光或無線訊號傳輸。"
         },
-        transmission: "傳輸中：電子訊號透過物理介質傳送到路由器，再轉送到目的地。",
+        transmission: "傳輸中：路由器移除收到的訊框，依 IP 選擇路徑，再建立下一段鏈路的訊框。",
         decapsulation: {
-            phy: "1. 實體層：接收電子訊號，還原為數位資料流。",
+            phy: "1. 實體層：接收電、光或無線訊號，還原為位元流。",
             link: "2. 資料連結層：檢查 MAC 位址，移除訊框標頭。",
             net: "3. 網路層：檢查 IP 位址，移除網路層標頭。",
             trans: "4. 傳輸層：檢查 Port 號，重組資料區段。",
@@ -75,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
         6: {
             name: "表現層 (Presentation Layer)",
             desc: "OSI 第六層，負責資料格式轉換、加密、解密與壓縮。確保不同系統間的資料相容性。",
-            example: "例如：將資料加密 (SSL/TLS)、影像壓縮 (JPEG)、字元編碼轉換。",
-            analogy: "📦 寄包裹比喻：把禮物包裝好、加上氣泡紙保護（壓縮）、如果是重要物品還要上鎖（加密），確保對方收到時完好無缺！",
+            example: "例如：資料加密、影像壓縮 (JPEG)、字元編碼轉換；TLS 常用於 TCP 之上，與 OSI 層次不是一一對應。",
+            analogy: "📦 寄包裹比喻：把禮物整理成較精簡的形式（壓縮）、如果是重要物品還要上鎖（加密），確保對方收到時完好無缺！",
             color: "#fffb7d"
         },
         5: {
@@ -88,8 +105,8 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         4: {
             name: "傳輸層 (Transport Layer)",
-            desc: "OSI 第四層，負責端對端的可靠資料傳輸，使用 Port 號區分不同服務。",
-            example: "例如：TCP 提供可靠連線、UDP 提供快速傳輸、Port 80 (HTTP)、Port 443 (HTTPS)。",
+            desc: "OSI 第四層提供端對端傳輸，使用 Port 號區分服務；TCP 提供可靠傳輸，UDP 不保證送達或順序。",
+            example: "例如：TCP 提供可靠的位元組串流；UDP 不保證送達或順序。Port 80 常用於 HTTP，443 常用於 HTTPS。",
             analogy: "📦 寄包裹比喻：大包裹要分成好幾箱寄送，每箱標上「第1箱/共3箱」（分段編號）。Port就像收件人的手機門號，確保送到正確的人手上！",
             color: "#ffd6a5"
         },
@@ -128,20 +145,20 @@ document.addEventListener('DOMContentLoaded', () => {
         6: {
             name: "表現層 (Presentation Layer)",
             desc: "OSI 第六層，接收端負責將收到的資料解密、解壓縮、還原為可讀格式。",
-            example: "例如：SSL/TLS 解密資料流、JPEG 解壓縮影像、UTF-8 編碼還原。",
-            analogy: "📦 收包裹比喻：拆開氣泡紙（解壓縮）、打開鎖頭（解密），把包裝好的禮物還原成原本的樣子！",
+            example: "例如：TLS 解密資料流、JPEG 解壓縮影像、UTF-8 解碼。",
+            analogy: "📦 收包裹比喻：將精簡的內容還原（解壓縮）、打開鎖頭（解密），把包裝好的禮物還原成原本的樣子！",
             color: "#fffb7d"
         },
         5: {
             name: "會議層 (Session Layer)",
             desc: "OSI 第五層，接收端管理與發送端之間的連線狀態，確保對話完整後才關閉。",
-            example: "例如：確認登入狀態有效、維持遠端桌面連線、處理断線重連。",
+            example: "例如：確認登入狀態有效、維持遠端桌面連線、處理斷線重連。",
             analogy: "📦 收包裹比喻：接到物流公司的電話確認「您的包裹已送達」，確認雙方的對話順利完成！",
             color: "#a0c4ff"
         },
         4: {
             name: "傳輸層 (Transport Layer)",
-            desc: "OSI 第四層，接收端依 Port 號將資料分送給正確的應用程式，並重組多個封包為完整資料。",
+            desc: "OSI 第四層依 Port 號將資料交給對應的應用程式；TCP 可排序並重組位元組串流，UDP 不保證順序或送達。",
             example: "例如：TCP 確認封包正確到達、重新排序亂序封包、回傳 ACK 訊號。",
             analogy: "📦 收包裹比喻：收到好幾箱包裹，根據箱子上的「收件人手機號碼」（Port）找到對應的你，再把「第1箱、第2箱」按順序排好！",
             color: "#ffd6a5"
@@ -162,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         1: {
             name: "實體層 (Physical Layer)",
-            desc: "OSI 第一層，接收端透過實體介質接收電子訊號，將其還原為數位資料位元流。",
+            desc: "OSI 第一層，接收端透過實體介質接收電、光或無線訊號，將其還原為數位資料位元流。",
             example: "例如：網路卡接收電子脈衝、光纖收發器轉換光訊號、Wi-Fi 天線接收無線訊號。",
             analogy: "📦 收包裹比喻：貨車到站卸貨，把高速公路上運送的包裹從車上搬下來（訊號→資料），準備拆封！",
             color: "#bdb2ff"
@@ -171,12 +188,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Mock Header Data
     const headerData = {
-        mac: "Src: 00:1A:2B:3C:4D:5E ｜ Dst: FF:FF:FF:FF:FF:FF",
-        ip: "Src: 192.168.1.10 ｜ Dst: 104.21.25.10",
-        tcp: "Src Port: 49152 ｜ Dst Port: 443",
-        sess: "SessionID: 0x8F3A2C1B",
-        pres: "Format: ASCII",
-        app: "Content-Type: text/plain"
+        macFirst: "來源: 02:00:00:00:00:10 ｜ 目的: 02:00:00:00:00:01",
+        macSecond: "來源: 02:00:00:00:00:02 ｜ 目的: 02:00:00:00:00:20",
+        ip: "來源: 192.0.2.10 ｜ 目的: 198.51.100.20",
+        tcp: "來源 Port: 49152 ｜ 目的 Port: 443",
+        sess: "連線管理（概念示意）",
+        pres: "文字可使用 UTF-8 編碼（概念示意）",
+        app: "使用者訊息（概念示意）"
     };
 
     function escapeHtml(text) {
@@ -193,9 +211,26 @@ document.addEventListener('DOMContentLoaded', () => {
     startBtn.addEventListener('click', startAnimation);
     resetBtn.addEventListener('click', resetAnimation);
     pauseBtn.addEventListener('click', togglePause);
+    nextBtn.addEventListener('click', () => {
+        if (nextResolve) {
+            const resolve = nextResolve;
+            nextResolve = null;
+            nextBtn.disabled = true;
+            resolve(true);
+        }
+    });
+    playMode.addEventListener('change', updateModeControls);
     speedRange.addEventListener('input', (e) => {
         animationSpeed = 2400 - (e.target.value * 400);
     });
+
+    function updateModeControls() {
+        const manual = playMode.value === 'manual';
+        speedRange.disabled = manual;
+        modeHint.textContent = manual
+            ? '按「開始傳輸」進入第一步，再按「下一步」逐一觀察。'
+            : '選擇手動逐步，可在每個階段停下來觀察。';
+    }
 
     // 暫停/繼續切換
     function togglePause() {
@@ -205,15 +240,17 @@ document.addEventListener('DOMContentLoaded', () => {
         pauseBtn.textContent = isPaused ? '繼續' : '暫停';
         pauseBtn.classList.toggle('paused', isPaused);
 
-        if (!isPaused && pauseResolve) {
-            // 繼續執行
-            pauseResolve();
-            pauseResolve = null;
-        }
+        document.getAnimations().forEach(animation => {
+            if (isPaused) animation.pause();
+            else animation.play();
+        });
 
-        explanationText.textContent = isPaused
-            ? '⏸️ 動畫已暫停，點擊「繼續」按鈕繼續播放...'
-            : explanationText.textContent.replace('⏸️ 動畫已暫停，點擊「繼續」按鈕繼續播放...', '');
+        if (isPaused) {
+            explanationBeforePause = explanationText.textContent;
+            explanationText.textContent = '⏸️ 動畫已暫停，點擊「繼續」按鈕繼續播放。';
+        } else {
+            explanationText.textContent = explanationBeforePause;
+        }
     }
 
     // 為所有 layer-item 加入點擊事件 (手動查看各層狀態)
@@ -239,7 +276,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // 顯示該層詳細說明
                     explanationText.innerHTML = `
-                        <strong style="color: ${info.color}; background: rgba(0,0,0,0.05); padding: 2px 8px; border-radius: 4px;">
+                        <strong style="color: #212529; background: ${info.color}; padding: 2px 8px; border-radius: 4px;">
                             ${info.name}
                         </strong><br>
                         <span style="display: block; margin-top: 8px;">${info.desc}</span>
@@ -261,25 +298,44 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初始化點擊事件
     setupLayerClickEvents();
 
-    // 可被暫停和中斷的 sleep 函式
-    async function sleep(ms, runToken) {
-        if (shouldReset || runToken !== activeAnimationToken) {
-            return false;
-        }
+    // 動畫時間只在播放時累計，重置或新一輪播放會使舊流程失效。
+    function sleep(ms, runToken, onProgress = () => {}) {
+        return new Promise(resolve => {
+            let elapsed = 0;
+            let previous = null;
+            function tick(now) {
+                if (shouldReset || runToken !== activeAnimationToken) {
+                    resolve(false);
+                    return;
+                }
+                if (isPaused) {
+                    previous = null;
+                } else {
+                    if (previous !== null) elapsed += now - previous;
+                    previous = now;
+                    onProgress(Math.min(elapsed / ms, 1));
+                    if (elapsed >= ms) {
+                        resolve(true);
+                        return;
+                    }
+                }
+                requestAnimationFrame(tick);
+            }
+            requestAnimationFrame(tick);
+        });
+    }
 
-        while (isPaused && !shouldReset && runToken === activeAnimationToken) {
-            await new Promise(resolve => {
-                pauseResolve = resolve;
-            });
-            pauseResolve = null;
-        }
+    function waitForStep(ms, runToken, onProgress) {
+        if (!manualMode) return sleep(ms, runToken, onProgress);
+        if (shouldReset || runToken !== activeAnimationToken) return Promise.resolve(false);
+        if (onProgress) onProgress(1);
+        nextBtn.disabled = false;
+        return new Promise(resolve => { nextResolve = resolve; });
+    }
 
-        if (shouldReset || runToken !== activeAnimationToken) {
-            return false;
-        }
-
-        await new Promise(resolve => setTimeout(resolve, ms));
-        return !(shouldReset || runToken !== activeAnimationToken);
+    function showProgress(phase) {
+        stepNumber += 1;
+        stepStatus.textContent = `${phase} · ${stepNumber} / 17`;
     }
 
     // Helper to create layer visual
@@ -287,7 +343,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const div = document.createElement('div');
         div.className = `data-unit layer-${type}`;
 
-        let headerHtml = `<div class="header-title">${label} Header</div>`;
+        const title = ['app', 'pres', 'sess'].includes(type) ? `${label} 處理` : `${label} 標頭`;
+        let headerHtml = `<div class="header-title">${title}</div>`;
         if (detailedHeader) {
             headerHtml += `<div class="header-details">${detailedHeader}</div>`;
         }
@@ -307,11 +364,15 @@ document.addEventListener('DOMContentLoaded', () => {
         isAnimating = true;
         isPaused = false;
         shouldReset = false;
+        manualMode = playMode.value === 'manual';
+        stepNumber = 0;
         startBtn.disabled = true;
+        playMode.disabled = true;
         resetBtn.disabled = false;  // 允許在動畫中重置
-        pauseBtn.disabled = false;  // 啟用暫停按鈕
+        pauseBtn.disabled = manualMode;
         pauseBtn.textContent = '暫停';
         messageInput.disabled = true;
+        modeHint.textContent = manualMode ? '閱讀目前階段後，按「下一步」繼續。' : '自動播放中，可隨時暫停或重置。';
 
         resetVisuals();
 
@@ -329,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!(await sleep(50, runToken))) return;
         appLayer.style.opacity = '1';
         appLayer.style.transform = 'translateY(0)';
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
 
         // Step 6: Presentation Layer
         setSenderStep(6);
@@ -337,7 +398,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const presLayer = createLayer('pres', '', 'PRES', headerData.pres);
         presLayer.querySelector('.layer-content-wrapper').appendChild(appLayer);
         senderStack.appendChild(presLayer);
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
 
         // Step 5: Session Layer
         setSenderStep(5);
@@ -345,7 +406,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sessLayer = createLayer('sess', '', 'SESS', headerData.sess);
         sessLayer.querySelector('.layer-content-wrapper').appendChild(presLayer);
         senderStack.appendChild(sessLayer);
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
 
         // Step 4: Transport Layer
         setSenderStep(4);
@@ -353,7 +414,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const tcpLayer = createLayer('tcp', '', 'TCP', headerData.tcp);
         tcpLayer.querySelector('.layer-content-wrapper').appendChild(sessLayer);
         senderStack.appendChild(tcpLayer);
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
 
         // Step 3: Network Layer
         setSenderStep(3);
@@ -361,20 +422,20 @@ document.addEventListener('DOMContentLoaded', () => {
         const ipLayer = createLayer('ip', '', 'IP', headerData.ip);
         ipLayer.querySelector('.layer-content-wrapper').appendChild(tcpLayer);
         senderStack.appendChild(ipLayer);
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
 
         // Step 2: Data Link Layer
         setSenderStep(2);
         explanationText.textContent = texts.encapsulation.link;
-        const macLayer = createLayer('mac', '', 'MAC', headerData.mac);
+        const macLayer = createLayer('mac', '', 'MAC', headerData.macFirst);
         macLayer.querySelector('.layer-content-wrapper').appendChild(ipLayer);
         senderStack.appendChild(macLayer);
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
 
         // Step 1: Physical Layer
         setSenderStep(1);
         explanationText.textContent = texts.encapsulation.phy;
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
 
 
         // --- 2. Transmission ---
@@ -384,24 +445,30 @@ document.addEventListener('DOMContentLoaded', () => {
         senderStack.style.opacity = '0';
         flyingPacket.classList.remove('hidden');
 
-        flyingPacket.style.transition = `left ${animationSpeed / 1000}s linear`;
-        flyingPacket.style.left = '20%';
-        flyingPacket.offsetHeight;
+        showProgress('第一段傳送');
+        hopDetails.textContent = `第一段：發送端 → 路由器｜${headerData.macFirst}`;
+        hopDetails.classList.remove('hidden');
+        positionPacket(20);
+        if (!(await waitForStep(animationSpeed, runToken, progress => {
+            positionPacket(20 + progress * 30);
+        }))) return;
 
-        flyingPacket.style.left = '50%';
-
-        if (!(await sleep(animationSpeed, runToken))) return;
-
+        showProgress('路由器轉送');
         router.classList.add('active');
-        if (!(await sleep(500, runToken))) return;
+        explanationText.textContent = '路由器檢查目的 IP 並選擇下一站，移除舊訊框，再封裝新的鏈路標頭。';
+        if (!(await waitForStep(500, runToken))) return;
         router.classList.remove('active');
 
-        flyingPacket.style.left = '80%';
-
-        if (!(await sleep(animationSpeed, runToken))) return;
+        showProgress('第二段傳送');
+        hopDetails.textContent = `第二段：路由器 → 接收端｜${headerData.macSecond}`;
+        explanationText.textContent = texts.transmission;
+        if (!(await waitForStep(animationSpeed, runToken, progress => {
+            positionPacket(50 + progress * 30);
+        }))) return;
 
         flyingPacket.classList.add('hidden');
-        flyingPacket.style.left = '20%';
+        hopDetails.classList.add('hidden');
+        positionPacket(20);
 
 
         // --- 3. Decapsulation (Receiver) ---
@@ -425,57 +492,60 @@ document.addEventListener('DOMContentLoaded', () => {
         const r_ip = createLayer('ip', '', 'IP', headerData.ip);
         r_ip.querySelector('.layer-content-wrapper').appendChild(r_tcp);
 
-        const r_mac = createLayer('mac', '', 'MAC', headerData.mac);
+        const r_mac = createLayer('mac', '', 'MAC', headerData.macSecond);
         r_mac.querySelector('.layer-content-wrapper').appendChild(r_ip);
 
         receiverStack.appendChild(r_mac);
 
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
 
         // Step 2: Remove Link
         setReceiverStep(2);
         explanationText.textContent = texts.decapsulation.link;
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
         r_mac.replaceWith(r_ip);
 
         // Step 3: Remove Network
         setReceiverStep(3);
         explanationText.textContent = texts.decapsulation.net;
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
         r_ip.replaceWith(r_tcp);
 
         // Step 4: Remove Transport
         setReceiverStep(4);
         explanationText.textContent = texts.decapsulation.trans;
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
         r_tcp.replaceWith(r_sess);
 
         // Step 5: Remove Session
         setReceiverStep(5);
         explanationText.textContent = texts.decapsulation.sess;
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
         r_sess.replaceWith(r_pres);
 
         // Step 6: Remove Presentation
         setReceiverStep(6);
         explanationText.textContent = texts.decapsulation.pres;
-        if (!(await sleep(animationSpeed, runToken))) return;
+        if (!(await waitForStep(animationSpeed, runToken))) return;
         r_pres.replaceWith(r_app);
 
         // Step 7: Done
         setReceiverStep(7);
         explanationText.textContent = texts.decapsulation.app;
-        if (!(await sleep(animationSpeed, runToken))) return;
 
         finalMessage.textContent = `收到訊息：${message}`;
         finalMessage.classList.remove('hidden');
 
         isAnimating = false;
         isPaused = false;
+        nextBtn.disabled = true;
+        playMode.disabled = false;
+        modeHint.textContent = '傳輸完成！可重新開始或重置。';
         startBtn.disabled = false;
         resetBtn.disabled = false;
         pauseBtn.disabled = true;
         pauseBtn.textContent = '暫停';
+        pauseBtn.classList.remove('paused');
         messageInput.disabled = false;
     }
 
@@ -483,20 +553,23 @@ document.addEventListener('DOMContentLoaded', () => {
         // 設定中斷標記
         shouldReset = true;
         activeAnimationToken += 1;
-
-        // 如果正在暫停中，解除暫停讓動畫可以結束
-        if (isPaused && pauseResolve) {
-            pauseResolve();
-            pauseResolve = null;
+        if (nextResolve) {
+            nextResolve(false);
+            nextResolve = null;
         }
 
         isAnimating = false;
         isPaused = false;
         resetVisuals();
+        nextBtn.disabled = true;
+        playMode.disabled = false;
+        stepStatus.textContent = '準備就緒';
+        updateModeControls();
         startBtn.disabled = false;
         resetBtn.disabled = false;
         pauseBtn.disabled = true;
         pauseBtn.textContent = '暫停';
+        pauseBtn.classList.remove('paused');
         messageInput.disabled = false;
         explanationText.textContent = texts.idle;
     }
@@ -506,17 +579,21 @@ document.addEventListener('DOMContentLoaded', () => {
         senderStack.style.opacity = '1';
         receiverStack.innerHTML = '';
         flyingPacket.classList.add('hidden');
-        flyingPacket.style.left = '20%';
+        positionPacket(20);
+        hopDetails.classList.add('hidden');
+        router.classList.remove('active');
         finalMessage.classList.add('hidden');
         clearActiveSteps();
     }
 
     function setSenderStep(stepNum) {
+        showProgress('發送端封裝');
         clearActiveSteps();
         if (senderSteps[stepNum]) senderSteps[stepNum].classList.add('active');
     }
 
     function setReceiverStep(stepNum) {
+        showProgress('接收端解封裝');
         clearActiveSteps();
         if (receiverSteps[stepNum]) receiverSteps[stepNum].classList.add('active');
     }

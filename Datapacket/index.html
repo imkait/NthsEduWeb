@@ -13,36 +13,54 @@
 
 <body>
     <header>
-        <h1>網路封包傳遞原來這麼簡單！</h1>
-        <p>跟著動畫一起了解 OSI 七層架構封裝與傳輸的奧秘</p>
+        <div class="header-inner">
+            <div>
+                <p class="eyebrow">NETWORK LAB <span>／</span> 互動教材</p>
+                <h1>一則訊息的<span>網路旅程</span></h1>
+                <p class="header-subtitle">從發送、轉送到接收，跟著封包認識 OSI 七層與 TCP/IP。</p>
+            </div>
+            <div class="header-mark" aria-hidden="true"><span>DATA</span><b>→</b><span>PACKET</span><b>→</b><span>DATA</span></div>
+        </div>
     </header>
 
     <main class="container">
         <!-- 控制面板 -->
         <section class="controls">
             <div class="input-group">
-                <label for="messageInput">輸入訊息：</label>
+                <label for="messageInput">要傳送的訊息</label>
                 <input type="text" id="messageInput" value="Hello, World!" maxlength="20">
             </div>
+            <div class="mode-control">
+                <label for="playMode">播放方式</label>
+                <select id="playMode">
+                    <option value="auto">自動播放</option>
+                    <option value="manual">手動逐步</option>
+                </select>
+            </div>
+            <div class="speed-control">
+                <label for="speedRange">動畫速度</label>
+                <input type="range" id="speedRange" min="1" max="5" value="3">
+            </div>
             <div class="button-group">
-                <button id="startBtn" class="btn primary">開始傳輸</button>
+                <button id="startBtn" class="btn primary">開始傳輸 <span aria-hidden="true">→</span></button>
+                <button id="nextBtn" class="btn next" disabled>下一步 →</button>
                 <button id="pauseBtn" class="btn warning" disabled>暫停</button>
                 <button id="resetBtn" class="btn secondary">重置</button>
             </div>
-            <div class="speed-control">
-                <label for="speedRange">動畫速度：</label>
-                <input type="range" id="speedRange" min="1" max="5" value="3">
-            </div>
+            <p id="modeHint" class="mode-hint">選擇手動逐步，可在每個階段停下來觀察。</p>
         </section>
 
         <!-- 教學說明區域 -->
         <section class="info-panel">
-            <div id="explanationText" class="explanation-box">
+            <div class="info-heading"><span>現在進行到</span><span id="stepStatus" class="step-status" aria-live="polite">準備就緒</span></div>
+            <div id="explanationText" class="explanation-box" aria-live="polite">
                 準備好開始了嗎？輸入訊息並點擊「開始傳輸」！
             </div>
+            <p class="model-note">概念示意：不實際編碼、加密或分段，省略 TCP 握手、NAT 與訊框尾端。OSI 七層與實際 TCP/IP 協定並非一一對應。</p>
         </section>
 
         <!-- 動畫舞台 -->
+        <div class="stage-heading"><div><p class="eyebrow dark">PACKET JOURNEY</p><h2>封包傳遞路徑</h2></div><p>傳輸前或完成後，可點選層級查看說明</p></div>
         <section class="stage">
             <!-- 發送端 Layer 指示器 -->
             <div class="layer-list sender-layers">
@@ -66,12 +84,11 @@
 
             <!-- 網路傳輸路徑 -->
             <div class="network-path">
-                <div class="connection-line"></div>
+                <div id="hopDetails" class="hop-details hidden" aria-live="polite"></div>
                 <div class="router">
                     <div class="device-icon">🔄</div>
                     <div class="device-label">路由器</div>
                 </div>
-                <div class="connection-line"></div>
 
                 <!-- 傳輸中的封包 -->
                 <div id="flyingPacket" class="flying-packet hidden">
@@ -103,7 +120,7 @@
     </main>
 
     <footer>
-        <p>Designed for Education | OSI 7-Layer Visualization</p>
+        <p>NETWORK LAB <span>·</span> OSI 7-LAYER VISUALIZATION</p>
     </footer>
 
     <script src="script.js"></script>
@@ -115,37 +132,6 @@
         </svg>
         回到首頁
     </a>
-    <style>
-        .back-to-home-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: #0f4c81;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            text-decoration: none;
-            font-family: 'Noto Sans TC', sans-serif;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-            z-index: 9999;
-        }
-
-        .back-to-home-btn:hover {
-            background-color: #2c7da0;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-        }
-
-        .back-to-home-btn svg {
-            width: 18px;
-            height: 18px;
-        }
-    </style>
 </body>
 
 </html>
