@@ -17,6 +17,7 @@
     --biology-color: #118ab2;
     --earth-science-color: #4472a0;
     --cs-color: #073b4c;
+    --data-processing-color: #8b5cf6;
 }
 
 * {
@@ -225,6 +226,10 @@ body {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
 
+.data-processing-icon {
+    background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+}
+
 .section-header h2 {
     font-size: 1.5rem;
     font-weight: 700;
@@ -348,6 +353,12 @@ body {
 
 .cs-bg {
     background: var(--cs-color);
+    top: -50px;
+    right: -50px;
+}
+
+.data-processing-bg {
+    background: var(--data-processing-color);
     top: -50px;
     right: -50px;
 }
