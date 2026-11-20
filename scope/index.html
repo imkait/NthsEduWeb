@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="探索顯微鏡、望遠鏡與眼睛的成像光路，並比較近視與遠視的鏡片矯正。">
+  <title>雙鏡成像研究室｜顯微鏡、望遠鏡與視力矯正</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#lab">跳至互動實驗</a>
+  <header class="topbar"><a href="../index.html" class="home-link">← 返回首頁</a><span>NTHS · PHYSICS LAB <b>03</b></span></header>
+  <main>
+    <section class="intro" aria-labelledby="page-title">
+      <div><p class="eyebrow">OPTICS / RAY DIAGRAMS</p><h1 id="page-title">雙鏡成像<span>研究室</span></h1><p class="lead">從顯微鏡、望遠鏡到眼睛，沿著每一段光線，找出像形成的位置。</p></div>
+      <div class="intro-mark" aria-hidden="true"><span class="ring ring-one"></span><span class="ring ring-two"></span><span class="axis"></span><span class="spark">✦</span></div>
+    </section>
+    <section class="lab" id="lab" aria-labelledby="lab-title">
+      <div class="section-heading"><div><p class="eyebrow">01 / INTERACTIVE LAB</p><h2 id="lab-title">選一種成像情境，追蹤光線</h2></div><p>操作左側控制台，觀察右側光路與成像位置。</p></div>
+      <div class="mode-tabs" role="tablist" aria-label="選擇成像情境">
+        <button id="tab-micro" class="mode-tab active" type="button" role="tab" aria-selected="true" aria-controls="mode-panel" data-mode="micro"><span>01</span> 複式顯微鏡</button>
+        <button id="tab-kepler" class="mode-tab" type="button" role="tab" aria-selected="false" aria-controls="mode-panel" data-mode="kepler"><span>02</span> 克卜勒式望遠鏡</button>
+        <button id="tab-galileo" class="mode-tab" type="button" role="tab" aria-selected="false" aria-controls="mode-panel" data-mode="galileo"><span>03</span> 伽利略式望遠鏡</button>
+        <button id="tab-eye" class="mode-tab" type="button" role="tab" aria-selected="false" aria-controls="mode-panel" data-mode="eye"><span>04</span> 眼睛與視力矯正</button>
+      </div>
+      <div class="lab-grid" id="mode-panel" role="tabpanel" aria-labelledby="tab-micro">
+        <aside class="controls" aria-label="實驗控制">
+          <div class="panel-title"><span>CONTROL / 控制台</span><button id="reset" type="button" class="text-button">↺ 重置</button></div>
+          <div class="mode-note"><p id="mode-kicker">近物 · 兩次成像</p><h3 id="mode-title">複式顯微鏡</h3><p id="mode-description">物鏡先形成放大的倒立實像，目鏡再像放大鏡一樣觀看它。</p></div>
+          <div id="micro-controls" class="control-group">
+            <label for="micro-focus">中間像與目鏡距離 <output id="micro-focus-value" for="micro-focus">0.78 fₑ</output></label>
+            <input id="micro-focus" type="range" min="0.65" max="1.1" step="0.01" value="0.78">
+            <div class="range-ends"><span>焦點內</span><span>焦點外</span></div>
+          </div>
+          <div id="telescope-controls" class="control-group" hidden>
+            <label for="focus-offset">鏡筒距離 <output id="focus-value" for="focus-offset">270 單位</output></label>
+            <input id="focus-offset" type="range" min="-30" max="30" step="1" value="0">
+            <div class="range-ends"><span>鏡距較短</span><span>鏡距較長</span></div>
+            <button id="autofocus" type="button" class="focus-button">◎ 一鍵調到遠物準焦</button>
+          </div>
+          <div id="eye-controls" class="control-group" hidden>
+            <fieldset class="eye-options">
+              <legend>選擇視力狀況</legend>
+              <label><input type="radio" name="vision" value="myopia" checked>近視</label>
+              <label><input type="radio" name="vision" value="hyperopia">遠視</label>
+            </fieldset>
+            <label for="accommodation">睫狀肌調節 <output id="accommodation-value" for="accommodation">0%</output></label>
+            <input id="accommodation" type="range" min="0" max="100" step="1" value="0" aria-describedby="control-help">
+            <div class="range-ends"><span>放鬆</span><span>收縮</span></div>
+          </div>
+          <p class="control-help" id="control-help">標本固定在物鏡前方 1.35 fₒ。fₑ 是目鏡焦距。</p>
+        </aside>
+        <div class="diagram-column">
+          <div class="diagram-card"><div class="diagram-top"><div><span class="live-dot"></span> 即時近軸光路</div><span id="diagram-caption">複式顯微鏡 / 近物</span></div>
+            <div class="diagram-scroll" role="region" aria-label="近軸光路圖" tabindex="0"><svg id="ray-diagram" viewBox="0 0 1100 680" role="img" aria-labelledby="diagram-title diagram-desc"><title id="diagram-title">雙透鏡成像光路</title><desc id="diagram-desc">調整滑桿後，物鏡與目鏡的光路會更新。下方文字同步說明成像結果。</desc></svg></div>
+            <p class="diagram-hint">可左右滑動，查看完整光路。</p>
+            <div class="legend"><span><i class="swatch ray-a"></i>光線 A</span><span><i class="swatch ray-b"></i>光線 B</span><span><i class="swatch ray-c"></i>光線 C</span><span id="instrument-dashes"><i class="swatch dashed"></i>反向延長線／假設光路</span><span id="lens-key">fₒ、fₑ 分別為物鏡與目鏡焦距</span><span id="eye-dashes" hidden><i class="swatch dashed"></i>視網膜後方的假想延長線</span></div>
+          </div>
+          <div class="result" aria-live="polite" aria-atomic="true"><div><p class="eyebrow">WHAT TO NOTICE / 觀察重點</p><h3 id="result-title">物鏡先做出中間實像</h3><p id="result-description">光線經物鏡後實際交會，再由目鏡發散進入眼睛。</p></div><div class="result-facts"><div><span id="fact-one-label">中間像</span><strong id="fact-one">倒立 · 實像</strong></div><div><span id="fact-two-label">最終像</span><strong id="fact-two">放大 · 虛像</strong></div></div></div>
+        </div>
+      </div>
+      <p class="model-note" id="instrument-model">模型範圍：使用理想薄透鏡與近軸光線；圖上距離經縮放以便閱讀。天文望遠鏡以遠方物體的平行入射光示意，圖中顯示的是角放大，不是星體變大。</p>
+      <p class="model-note" id="eye-model" hidden>角膜與水晶體合併為等效透鏡。透鏡變凸示意水晶體形狀改變，角膜屈光力固定。滑桿百分比是各情境的示範範圍。<a href="https://openstax.org/books/college-physics/pages/26-2-vision-correction">遠點與視力矯正</a> · <a href="https://pubmed.ncbi.nlm.nih.gov/33491156/">睫狀肌與水晶體調節</a></p>
+    </section>
+    <section class="compare" aria-labelledby="compare-title"><div class="section-heading"><div><p class="eyebrow">02 / PUT IT TOGETHER</p><h2 id="compare-title">三種儀器，一眼比較</h2></div></div>
+      <div class="table-scroll"><table><thead><tr><th scope="col">儀器</th><th scope="col">觀察對象</th><th scope="col">物鏡</th><th scope="col">目鏡</th><th scope="col">鏡內的中間實像</th><th scope="col">正常觀看方向</th></tr></thead><tbody><tr><th scope="row">複式顯微鏡</th><td>近處小標本</td><td>凸透鏡</td><td>凸透鏡</td><td>有，倒立、放大</td><td>相對標本倒立</td></tr><tr><th scope="row">克卜勒式</th><td>遠方景物</td><td>凸透鏡</td><td>凸透鏡</td><td>有，倒立</td><td>倒立</td></tr><tr><th scope="row">伽利略式</th><td>遠方景物</td><td>凸透鏡</td><td>凹透鏡</td><td>沒有；會聚前已被目鏡截住</td><td>正立</td></tr></tbody></table></div>
+      <div class="extension"><span>延伸認識</span><p>真正的天文望遠鏡也有使用凹面鏡集光的反射式設計；這頁先聚焦在能用兩片透鏡直接比較的折射式構造。</p></div>
+    </section>
+  </main>
+  <footer>高雄市立楠梓高中 · AI 輔助教學資源網 <a href="../index.html">返回首頁 ↗</a></footer>
+</body>
+</html>
